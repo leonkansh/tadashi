@@ -1,0 +1,1 @@
+/*TODO: Create exportable function that authenticates the currently logged user for an action */
