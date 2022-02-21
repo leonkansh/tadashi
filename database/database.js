@@ -11,13 +11,18 @@ async function main() {
 
     const userSchema = new mongoose.Schema({
         email: String,
-        displayName: String
+        displayName: String,
+        orgs: [{
+            orgid: Schema.Types.ObjectId, // orgid
+            team: Number // default to -1
+        }]
     });
 
     const orgSchema = new mongoose.Schema({
         name: String,
         admin: Schema.Types.ObjectId, // userid
         description: String, // can be empty
+        accessCode: String,
         members: [Schema.Types.ObjectId], // [userid]
         teams: { // intialize null
             id: Number,
