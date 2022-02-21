@@ -48,7 +48,8 @@ async function main() {
                 todos: [{
                     content: String, // Content of todo
                     userid: Schema.Types.ObjectId, // userid
-                    date: Date
+                    date: Date,
+                    completed: Boolean
                 }]
             }]
         }]
