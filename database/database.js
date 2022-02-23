@@ -20,15 +20,18 @@ async function main() {
 
     const orgSchema = new mongoose.Schema({
         name: String,
-        admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        admin: {
+            id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            name: String
+        },
         description: String, // can be empty
         accessCode: String,
         members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-        teams: { // intialize null
+        teams: [{ // intialize null
             id: Number,
             name: String,
             members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] 
-        }
+        }]
     });
 
     const msgSchema = new mongoose.Schema({
