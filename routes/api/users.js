@@ -4,8 +4,8 @@ var router = express.Router();
 // GET: /{userid} : returns a user profile
 router.get('/:userid', async (req, res) => {
     try {
-        let sessionUserId = req.session.userid;
-        let userid = req.params.userid;
+        const sessionUserId = req.session.userid;
+        const userid = req.params.userid;
         let user = await req.db.User.findById(userid).exec();
         if (sessionUserId == userid) {
             res.json({
@@ -33,9 +33,9 @@ router.get('/:userid', async (req, res) => {
 */
 router.put('/:userid', async (req, res) => {
     try {
-        let sessionUserId = req.session.userid;
-        let userid = req.params.userid;
-        let user = await req.db.User.findByIdAndUpdate(
+        const sessionUserId = req.session.userid;
+        const userid = req.params.userid;
+        const user = await req.db.User.findByIdAndUpdate(
             userid,
             { displayName: req.body.name }
         );

@@ -13,29 +13,35 @@ async function main() {
         email: String,
         displayName: String,
         admin: [{
-            org: {type: mongoose.Schema.Types.ObjectId, ref: "Org"},
+            _id: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
             name: String
         }],
         orgs: [{
-            org: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
-            name: String,
-            team: Number
+            _id: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+            teamid: Number,
+            name: String
         }]
     });
 
     const orgSchema = new mongoose.Schema({
         name: String,
         admin: {
-            id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             name: String
         },
         description: String, // can be empty
         accessCode: String,
-        members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        members: [{
+            _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            name: String
+        }],
         teams: [{ // intialize null
-            id: Number,
-            name: String,
-            members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] 
+            members: [{
+                _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                name: String
+            }],
+            teamid: Number,
+            name: String
         }]
     });
 

@@ -37,13 +37,13 @@ app.use(sessions({
 
 // Temp account setup
 app.use((req, res, next) => {
-    let username = 1;
+    let username = 3;
+    req.session.userid = '621c7f364f7599e26f01ecd1';
     req.session.account = {
         username: username,
         name: `Test User: ${username}`
     }
     req.session.isAuthenticated = true;
-    req.session.userid = '621c34884f7599e26f01c8b3';
     next();
 });
 

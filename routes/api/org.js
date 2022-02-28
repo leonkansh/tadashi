@@ -15,7 +15,7 @@ router.post('/create', async (req, res) => {
             let org = await req.db.Org.create({
                 name: req.body.name,
                 admin: {
-                    id: req.session.userid,
+                    _id: req.session.userid,
                     name: req.session.account.name
                 },
                 description: req.body.description,
@@ -26,7 +26,7 @@ router.post('/create', async (req, res) => {
                 req.session.userid,
                 { $push: { 
                     admin: {
-                        org: org._id,
+                        _id: org._id,
                         name: org.name
                     }
                 }
@@ -48,7 +48,7 @@ router.post('/create', async (req, res) => {
 */
 router.get('/:orgid', async (req, res) => {
     try {
-        let orgid = req.params.orgid;
+        const orgid = req.params.orgid;
         let org = await req.db.Org.findById(orgid);
         res.json({
             name: org.name,
@@ -69,12 +69,12 @@ router.get('/:orgid', async (req, res) => {
     // admin authentication is required
 router.put('/:orgid', async (req, res) => {
     try {
-        let sessionUserId = req.session.userid;
-        let orgid = req.params.orgid;
+        const sessionUserId = req.session.userid;
+        const orgid = req.params.orgid;
         await req.db.Org.findOneAndUpdate(
             { 
-                "_id": orgid,
-                "admin.id": sessionUserId
+                _id: orgid,
+                "admin._id": sessionUserId
             },
             {
                 name: req.body.name,
@@ -105,7 +105,7 @@ router.delete('/:orgid', async (req, res) => {
             // Authenticate
             const orgid = req.params.orgid;
             const org = await req.db.Org.findById(orgid);
-            if (org.admin.id == req.session.userid) {
+            if (org.admin._id == req.session.userid) {
                 // Pull user list
                 let members = org.members;
 
@@ -115,16 +115,16 @@ router.delete('/:orgid', async (req, res) => {
                         uid,
                         { $pull:
                             {
-                                "orgs.org": orgid
+                                "orgs._id": orgid
                             }
                         }
                     ).exec();
                 });
 
                 await req.db.User.findByIdAndUpdate(
-                    org.admin.id,
+                    org.admin._id,
                     { $pull: {
-                        admin: { org: orgid }
+                        admin: { _id: orgid }
                     }
                 }).exec();
 
@@ -184,21 +184,25 @@ router.post('/:orgid/join', async (req, res) => {
                 orgid,
             );
             if (org.accessCode == accessCode) {
+                let user = await req.db.User.findByIdAndUpdate(
+                    sessionUserId,
+                    { $push: {
+                    orgs: {
+                        _id: orgid,
+                        teamid: -1,
+                        name: ""
+                    }
+                }});
                 await req.db.Org.findByIdAndUpdate(
                     orgid,
                     { $push: {
-                        members: sessionUserId
+                        members: {
+                            _id: sessionUserId,
+                            name: user.displayName
+                        }
                     }}
                 ).exec();
-                await req.db.User.findByIdAndUpdate(
-                    sessionUserId,
-                    { $push: {
-                        orgs: {
-                            org: orgid,
-                            team: -1,
-                            name: ""
-                        }
-                    }}).exec();
+                await user.save();
                 res.json({
                     status: 'success'
                 });
@@ -225,42 +229,30 @@ router.post('/:orgid/leave', async (req, res) => {
         const orgid = req.params.orgid;
         try {
             // delete from user.team
-            let user = await req.db.User.findByIdAndUpdate(
+            await req.db.User.findByIdAndUpdate(
                 sessionUserId,
                 {
                     $pull: {
-                        orgs: { org: orgid }
+                        orgs: { _id: orgid }
                     }
                 }
             ).exec();
 
-            let orgArray = user.orgs;
-            let teamNumber = -1;
-            orgArray.forEach(item => {
-                if(item.org == orgid) {
-                    teamNumber = item.team;
-                }
-            });
             // delete from org.teams.members
-            if (teamNumber != -1) {
-                await req.db.Org.findByIdAndUpdate(
-                    orgid,
-                    {
-                        $pull: { 
-                            teams: {
-                                id: teamNumber,
-                                members: sessionUserId
-                            }
-                        }
-                    }  
-                ).exec();
-            }
+            await req.db.Org.findByIdAndUpdate(
+                orgid,
+                {
+                    $pull: {
+                        "teams.$[].members": { _id: sessionUserId }
+                    } 
+                }  
+            ).exec();
 
             // delete from org.members
             await req.db.Org.findByIdAndUpdate(
                 orgid,
                 {
-                    $pull: { members: sessionUserId }
+                    $pull: { members: { _id: sessionUserId } }
                 }  
             ).exec();
 
@@ -285,7 +277,7 @@ router.post('/:orgid/leave', async (req, res) => {
 // GET: /{orgid}/members : return a list of members in this org
 router.get('/:orgid/members', async (req, res) => {
     try {
-        let orgid = req.params.orgid;
+        const orgid = req.params.orgid;
         let org = await req.db.Org.findById(orgid).exec();
         res.json({
             members: org.members
@@ -308,44 +300,33 @@ router.post('/:orgid/kick', async (req, res) => {
         const orgid = req.params.orgid;
         try {
             let org = await req.db.Org.findById(orgid);
-            if (org.admin.id == sessionUserId) {
+            if (org.admin._id == sessionUserId) {
                 // delete from user.team
-                let user = await req.db.User.findByIdAndUpdate(
+                await req.db.User.findByIdAndUpdate(
                     targetUser,
                     {
                         $pull: {
-                            orgs: { org: orgid }
+                            orgs: { _id: orgid }
                         }
                     }
                 ).exec();
 
-                let orgArray = user.orgs;
-                let teamNumber = -1;
-                orgArray.forEach(item => {
-                    if(item.org == orgid) {
-                        teamNumber = item.team;
-                    }
-                });
                 // delete from org.teams.members
-                if (teamNumber != -1) {
-                    await req.db.Org.findByIdAndUpdate(
-                        orgid,
-                        {
-                            $pull: { 
-                                teams: {
-                                    id: teamNumber,
-                                    members: targetUser 
-                                }
-                            }
-                        }  
-                    ).exec();
-                }
+                await req.db.Org.findByIdAndUpdate(
+                    orgid,
+                    {
+                        $pull: { 
+                            "teams.$[].members": {_id: targetUser }
+                        }
+                    }  
+                ).exec();
+                
 
                 // delete from org.members
                 await req.db.Org.findByIdAndUpdate(
                     orgid,
                     {
-                        $pull: { members: targetUser }
+                        $pull: { members: { _id: targetUser } }
                     }  
                 ).exec();
 
