@@ -177,20 +177,37 @@ router.post('/:orgid/join', async (req, res) => {
         })
     } else {
         try {
-            let sessionUserId = req.session.userid;
-            let orgid = req.params.orgid;
-            let org = await req.db.Org.findOneAndUpdate(
-                {
-                    orgid: org.orgid,
-                    accessCode: req.body.accessCode
-                },
-                {
-                    name: req.body.name,
-                    admin: req.body.admin.name,
-                    description: req.body.description,
-                    members: req.body.members
-                }
+            const sessionUserId = req.session.userid;
+            const orgid = req.params.orgid;
+            const accessCode = req.body.accessCode;
+            let org = await req.db.Org.findById(
+                orgid,
             );
+            if (org.accessCode == accessCode) {
+                await req.db.Org.findByIdAndUpdate(
+                    orgid,
+                    { $push: {
+                        members: sessionUserId
+                    }}
+                ).exec();
+                await req.db.User.findByIdAndUpdate(
+                    sessionUserId,
+                    { $push: {
+                        orgs: {
+                            org: orgid,
+                            team: -1,
+                            name: ""
+                        }
+                    }}).exec();
+                res.json({
+                    status: 'success'
+                });
+            } else {
+                res.json({
+                    status: 'error',
+                    error: 'incorrect access code'
+                });
+            }
         } catch (error) {
             res.json({
                 status: 'error',
