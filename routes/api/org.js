@@ -220,47 +220,65 @@ router.post('/:orgid/join', async (req, res) => {
 // POST: /{orgid}/leave : remove a user from this org
     // user themself only
 router.post('/:orgid/leave', async (req, res) => {
-    let userid = req.body.userid;
-    let sessionUserId = req.session.userid;
-    let orgid = req.params.orgid;
-    try {
-        let org = await req.db.Org.findById({orgid}).exec();
-        if (sessionUserId != userid) {
-            res.json({  
-                status: 'failure',
-                error: 'not oneself'
+    if (req.session.isAuthenticated) {
+        const sessionUserId = req.session.userid;
+        const orgid = req.params.orgid;
+        try {
+            // delete from user.team
+            let user = await req.db.User.findByIdAndUpdate(
+                sessionUserId,
+                {
+                    $pull: {
+                        orgs: { org: orgid }
+                    }
+                }
+            ).exec();
+
+            let orgArray = user.orgs;
+            let teamNumber = -1;
+            orgArray.forEach(item => {
+                if(item.org == orgid) {
+                    teamNumber = item.team;
+                }
+            });
+            // delete from org.teams.members
+            if (teamNumber != -1) {
+                await req.db.Org.findByIdAndUpdate(
+                    orgid,
+                    {
+                        $pull: { 
+                            teams: {
+                                id: teamNumber,
+                                members: sessionUserId
+                            }
+                        }
+                    }  
+                ).exec();
+            }
+
+            // delete from org.members
+            await req.db.Org.findByIdAndUpdate(
+                orgid,
+                {
+                    $pull: { members: sessionUserId }
+                }  
+            ).exec();
+
+            res.json({
+                status: 'success'
+            });
+                
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: '404'
             });
         }
-        // delete from user.team
-        let user = await req.db.User.findById({userid}).exec();
-        await req.db.User.findByIdAndUpdate(
-            userid,
-            {
-                $pull: { "orgs.org": orgid }
-            }
-        ).save();
-    
-        // delete from org.teams.members
-        await req.db.Org.findByIdAndUpdate(
-            orgid,
-            {
-                $pull: { "teams.members": userid }
-            }  
-        ).save();
-
-        // delete from org.members
-        await req.db.Org.findByIdAndUpdate(
-            orgid,
-            {
-                $pull: { "members": userid }
-            }  
-        ).save();
-        
-    } catch (error) {
+    } else {
         res.json({
             status: 'error',
-            error: '404'
-        })
+            error: 'not authenticated'
+        });
     }
 });
 
@@ -268,7 +286,7 @@ router.post('/:orgid/leave', async (req, res) => {
 router.get('/:orgid/members', async (req, res) => {
     try {
         let orgid = req.params.orgid;
-        let org = await req.db.Org.findById({orgid}).exec();
+        let org = await req.db.Org.findById(orgid).exec();
         res.json({
             members: org.members
         });
@@ -280,51 +298,78 @@ router.get('/:orgid/members', async (req, res) => {
     }
 });
 
-// POST: /{orgid}/kick?user=[id] : 
+// POST: /{orgid}/kick : 
+    // body: targetUser = userid
     // admin only
 router.post('/:orgid/kick', async (req, res) => {
-    let userid = req.query.userid;
-    let sessionUserId = req.session.userid;
-    let orgid = req.params.orgid;
-    try {
-        let org = await req.db.Org.findById({orgid}).exec();
-        if (sessionUserId != org.admin.id) {
+    if (req.session.isAuthenticated) {
+        const sessionUserId = req.session.userid;
+        const targetUser = req.body.targetUser;
+        const orgid = req.params.orgid;
+        try {
+            let org = await req.db.Org.findById(orgid);
+            if (org.admin.id == sessionUserId) {
+                // delete from user.team
+                let user = await req.db.User.findByIdAndUpdate(
+                    targetUser,
+                    {
+                        $pull: {
+                            orgs: { org: orgid }
+                        }
+                    }
+                ).exec();
+
+                let orgArray = user.orgs;
+                let teamNumber = -1;
+                orgArray.forEach(item => {
+                    if(item.org == orgid) {
+                        teamNumber = item.team;
+                    }
+                });
+                // delete from org.teams.members
+                if (teamNumber != -1) {
+                    await req.db.Org.findByIdAndUpdate(
+                        orgid,
+                        {
+                            $pull: { 
+                                teams: {
+                                    id: teamNumber,
+                                    members: targetUser 
+                                }
+                            }
+                        }  
+                    ).exec();
+                }
+
+                // delete from org.members
+                await req.db.Org.findByIdAndUpdate(
+                    orgid,
+                    {
+                        $pull: { members: targetUser }
+                    }  
+                ).exec();
+
+                res.json({
+                    status: 'success'
+                });
+            } else {
+                res.json({
+                    status: 'error',
+                    error: 'improper credentials'
+                });
+            }
+        } catch (error) {
             res.json({
-                status: 'failure',
-                error: 'not admin'
+                status: 'error',
+                error: '404'
             });
         }
-        // delete from user.team
-        let user = await req.db.User.findById({userid}).exec();
-        await req.db.User.findByIdAndUpdate(
-            userid,
-            {
-                $pull: { "orgs.org": orgid }
-            }
-        ).save();
-        
-        // delete from org.teams.members
-        await req.db.Org.findByIdAndUpdate(
-            orgid,
-            {
-                $pull: { "teams.members": userid }
-            }
-        ).save();
-
-        // delete from org.members
-        await req.db.Org.findByIdAndUpdate(
-            orgid,
-            {
-                $pull: { "members": userid }
-            }
-        ).save();
-        
-    } catch (error) {
+    } else {
         res.json({
             status: 'error',
-            error: '404'
+            error: 'not authenticated'
         });
-    }
+    } 
 });
 
 // TODO: POST: /{orgid}/teams/random : put the entire org into random teams
