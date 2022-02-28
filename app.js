@@ -35,6 +35,18 @@ app.use(sessions({
     resave: false
 }));
 
+// Temp account setup
+app.use((req, res, next) => {
+    let username = 1;
+    req.session.account = {
+        username: username,
+        name: `Test User: ${username}`
+    }
+    req.session.isAuthenticated = true;
+    req.session.userid = '621c34884f7599e26f01c8b3';
+    next();
+});
+
 // GET: /signin : Microsoft SSO, redirects to '/login'
 app.get('/signin', (req, res) => {
     let username = req.query.id; // Temp call /signin?id={id}

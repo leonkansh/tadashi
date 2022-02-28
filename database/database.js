@@ -12,8 +12,13 @@ async function main() {
     const userSchema = new mongoose.Schema({
         email: String,
         displayName: String,
+        admin: [{
+            org: {type: mongoose.Schema.Types.ObjectId, ref: "Org"},
+            name: String
+        }],
         orgs: [{
             org: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+            name: String,
             team: Number
         }]
     });
