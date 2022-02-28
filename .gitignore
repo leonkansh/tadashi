@@ -1,6 +1,8 @@
 # Environment variables
 .env
 
+todo.md
+
 # Logs
 logs
 *.log

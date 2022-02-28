@@ -188,9 +188,9 @@ router.post('/:orgid/join', async (req, res) => {
                     sessionUserId,
                     { $push: {
                     orgs: {
-                        _id: orgid,
-                        teamid: -1,
-                        name: ""
+                        _id: orgid
+                        // teamid: -1, FIXME: leaving teamid/name null on join
+                        // name: ""
                     }
                 }});
                 await req.db.Org.findByIdAndUpdate(
@@ -353,6 +353,79 @@ router.post('/:orgid/kick', async (req, res) => {
     } 
 });
 
-// TODO: POST: /{orgid}/teams/random : put the entire org into random teams
+// POST: /{orgid}/teams/random : put the entire org into random teams
+router.post('/:orgid/teams/random', async (req, res) => {
+    if (req.session.isAuthenticated) {
+        try {
+            const userid = req.session.userid;
+            const orgid = req.params.orgid;
+            let org = await req.db.Org.findById(orgid);
+            if (org.admin._id == userid) {
+                const teamSize = req.body.teamSize;
+                const members = org.members;
+                let teams = []; 
+                let remainingStudents = members.length;
+                while (remainingStudents > 0) {
+                    let newTeam = [];
+                    for(let i = 0; i < teamSize; i++) {
+                        if (remainingStudents > 0) {
+                            newTeam.push(members[remainingStudents - 1]);
+                            remainingStudents--;
+                        }
+                    }
+                    console.log(remainingStudents)
+                    console.log(newTeam)
+                    if (newTeam.length != 0) {
+                        teams.push(newTeam);
+                    }
+                }
+                for (let i = 0; i < teams.length; i++) {
+                    let tempTeam = {
+                        members: teams[i],
+                        teamid: i + 1,
+                        name: `Team ${i + 1}`
+                    }
+                    org.teams.push(tempTeam)
+                    console.log('here 2')
+                    teams[i].forEach(mem => {
+                        console.log('here 3')
+                        req.db.User.findByIdAndUpdate(
+                            mem._id,
+                            {
+                                '$set': {
+                                    'orgs.$[el].teamid': i + 1,
+                                    'orgs.$[el].name': `Team ${i + 1}`
+                                }
+                            },
+                            {
+                                arrayFilters: [{ 'el._id': orgid }]
+                            }
+                        ).exec();
+                    });
+                }
+                console.log('here 4')
+                await org.save();
+                res.json({
+                    status: 'success'
+                });
+            } else {
+                res.json({
+                    status: 'error',
+                    error: 'improper credentials'
+                });
+            }
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: '404'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+});
 
 export default router;
