@@ -1,1 +1,23 @@
-/*TODO: Create exportable function that authenticates the currently logged user for an action */
+// True if {userid} is a part of {teamid} underneath {orgid}, false o/w
+async function verifyTeamMember(userid, orgid, teamid, db) {
+    try{
+       const orgDoc = await db.Org.findById(orgid);
+       const teamList = orgDoc.teams;
+       for(let j = 0; j < teamList.length; j++) {
+           if(teamList[j].teamid == teamid) {
+               const memList = teamList[j].members;
+               for(let i = 0; i < memList.length; i++) {
+                   if(memList[i]._id == userid) {
+                       return true;
+                   }
+               }
+           }
+       }
+       return false;
+    } catch(error) {
+        console.log(error);
+        return false;
+    }
+}
+
+export { verifyTeamMember };

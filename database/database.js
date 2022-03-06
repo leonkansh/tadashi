@@ -35,7 +35,7 @@ async function main() {
             _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             name: String
         }],
-        teams: [{ // intialize null
+        teams: [{ // initialize null
             members: [{
                 _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
                 name: String
@@ -59,7 +59,7 @@ async function main() {
     const assignmentSchema = new mongoose.Schema({
         orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
         assignments: [{
-            name: String, // Name of assginment
+            name: String, // Name of assignment
             description: String,
             data: [{
                 teamid: Number,

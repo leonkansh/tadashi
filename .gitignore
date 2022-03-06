@@ -2,6 +2,7 @@
 .env
 
 todo.md
+.vscode
 
 # Logs
 logs

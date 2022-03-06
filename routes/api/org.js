@@ -65,7 +65,7 @@ router.get('/:orgid', async (req, res) => {
     }
 });
 
-// PUT: /{orgid} : edit the orgnization description and name
+// PUT: /{orgid} : edit the organization description and name
     // admin authentication is required
 router.put('/:orgid', async (req, res) => {
     try {
@@ -92,7 +92,7 @@ router.put('/:orgid', async (req, res) => {
     };
 });
 
-// DELETE: /{orgid} : delete the entire orgnization
+// DELETE: /{orgid} : delete the entire organization
     // user authentication is required
 router.delete('/:orgid', async (req, res) => {
     if (!req.session.isAuthenticated) {
@@ -189,8 +189,6 @@ router.post('/:orgid/join', async (req, res) => {
                     { $push: {
                     orgs: {
                         _id: orgid
-                        // teamid: -1, FIXME: leaving teamid/name null on join
-                        // name: ""
                     }
                 }});
                 await req.db.Org.findByIdAndUpdate(
@@ -222,7 +220,7 @@ router.post('/:orgid/join', async (req, res) => {
 });
 
 // POST: /{orgid}/leave : remove a user from this org
-    // user themself only
+    // user themselves only
 router.post('/:orgid/leave', async (req, res) => {
     if (req.session.isAuthenticated) {
         const sessionUserId = req.session.userid;
@@ -386,9 +384,7 @@ router.post('/:orgid/teams/random', async (req, res) => {
                         name: `Team ${i + 1}`
                     }
                     org.teams.push(tempTeam)
-                    console.log('here 2')
                     teams[i].forEach(mem => {
-                        console.log('here 3')
                         req.db.User.findByIdAndUpdate(
                             mem._id,
                             {
@@ -403,7 +399,6 @@ router.post('/:orgid/teams/random', async (req, res) => {
                         ).exec();
                     });
                 }
-                console.log('here 4')
                 await org.save();
                 res.json({
                     status: 'success'
