@@ -53,7 +53,7 @@ router.get('/:orgid', async (req, res) => {
 */
 router.post('/:orgid', async (req, res) => {
     try {
-        const org = await req.db.findById(req.params.orgid);
+        const org = await req.db.Org.findById(req.params.orgid);
         if(req.session.userid == org.admin._id) {
             await req.db.Assignment.findOneAndUpdate(
                 {
@@ -103,7 +103,7 @@ router.post('/:orgid', async (req, res) => {
 router.get('/:orgid/:assignmentid', async (req, res) => {
     try {
         const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
-        const assignment = null;
+        let assignment = null;
         assignmentDoc.assignments.forEach(assign => {
             if(assign._id == req.params.assignmentid) {
                 assignment = assign
@@ -133,7 +133,8 @@ router.get('/:orgid/:assignmentid', async (req, res) => {
     Edit specific assignment in organization
     Payload Body:
     {
-        TODO: Complete Documentation
+        name: 'assignment name' (resend current name if no changes),
+        description: 'assignment description' (resend current description if no changes)
     }
     Admin authentication required.
 */
@@ -173,7 +174,7 @@ router.put('/:orgid/:assignmentid', async (req, res) => {
 router.delete('/:orgid/:assignmentid', async (req, res) => {
     try {
         const org = await req.db.Org.findById(req.params.orgid);
-        if(org.admin._id == req.params.userid) {
+        if(org.admin._id == req.session.userid) {
             await req.db.Assignment.findOneAndUpdate(
                 {
                     orgid: req.params.orgid
