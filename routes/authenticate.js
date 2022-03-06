@@ -20,4 +20,19 @@ async function verifyTeamMember(userid, orgid, teamid, db) {
     }
 }
 
-export { verifyTeamMember };
+async function retrieveTeamMembers(orgid, teamid, db) {
+    try {
+        const orgDoc = await db.Org.findById(orgid);
+        const teamList = orgDoc.teams;
+        for(let i = 0; i < teamList.length; i++) {
+            if(teamList[i].teamid == teamid) {
+                return teamList[i].members;
+            }
+        }
+    } catch(error) {
+        console.log(error);
+        return null;
+    }
+}
+
+export { verifyTeamMember, retrieveTeamMembers };

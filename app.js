@@ -40,8 +40,8 @@ app.use(sessions({
 // Temp account setup, delete and test POSTMAN with MS signin
 // May be advised for simple account tracking for now :(
 app.use((req, res, next) => {
-    let username = 1;
-    req.session.userid = '621d26cf398db9b58f5a82b8';
+    let username = 5;
+    req.session.userid = '621d27cd41fdfec15343ff7e';
     req.session.account = {
         username: username,
         name: `Test User: ${username}`

@@ -3,7 +3,7 @@
         /api/assignments
 */
 import express from "express";
-import { verifyTeamMember } from '../authenticate.js';
+import { verifyTeamMember, retrieveTeamMembers } from '../authenticate.js';
 let router = express.Router()
 
 /* ORGANIZATION LEVEL
@@ -211,20 +211,106 @@ router.delete('/:orgid/:assignmentid', async (req, res) => {
 
 /* GET: /{orgid}/{teamid}
     Retrieve all assignments for a team in an organization
+    Instances assignments on first assignment
     Used to retrieve alignments for horizontal scrolling
     Return:
-    {
-        TODO: Complete Documentation
-    }
+    [
+        {
+            name: 'assignment name',
+            description: 'assignment description',
+            leader:
+            {
+                _id: 'leader id',
+                name: 'leader name'
+            }
+            todos:
+            [
+                {
+                    content: 'todo content',
+                    userid: 
+                    {
+                        _id: 'assigned user id',
+                        name: 'assigned user name'
+                    }
+                    date: 'target completion date',
+                    completed: Boolean, T - has been finished; F - has not been finished
+                }
+            ]
+        }
+    ]
 */
-router.get('/:orgid/:teamid', async (req, res) => {
+router.get('/:orgid/team/:teamid', async (req, res) => {
     let auth = await verifyTeamMember(
         req.session.userid,
         req.params.orgid,
         req.params.teamid,
         req.db
     );
-
+    if(auth) {
+        try {
+            const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
+            const memberList = await retrieveTeamMembers(req.params.orgid, req.params.teamid, req.db);
+            let assignments = [];
+            let counter = memberList.length;
+            for (const assignment of assignmentDoc.assignments) {
+                let teamFound = false;
+                for (const data of assignment.data) {
+                    if(data.teamid == req.params.teamid) {
+                        teamFound = true;
+                        assignments.push({
+                            name: assignment.name,
+                            description: assignment.description,
+                            leader: data.leader,
+                            todos: data.todos
+                        });
+                    }
+                };
+                if(!teamFound) {
+                    await req.db.Assignment.findOneAndUpdate(
+                        {
+                            orgid: req.params.orgid
+                        },
+                        {
+                            $push: {
+                                'assignments.$[el].data': {
+                                    teamid: req.params.teamid,
+                                    leader: {
+                                        _id: memberList[counter % memberList.length]._id,
+                                        name: memberList[counter % memberList.length].name
+                                    },
+                                    todos: []
+                                }
+                            }
+                        },
+                        {
+                            arrayFilters: [{ 'el._id': assignment._id }]
+                        }
+                    ).exec();
+                    assignments.push({
+                        name: assignment.name,
+                        description: assignment.description,
+                        leader: {
+                            _id: memberList[counter % memberList.length]._id,
+                            name: memberList[counter % memberList.length].name
+                        },
+                        todos: []
+                    });
+                    counter++;
+                }
+            };
+            res.send(assignments);
+        } catch(error) {
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
 });
 
 /* GET: /{orgid}/{assignmentid}/{teamid}
@@ -234,7 +320,7 @@ router.get('/:orgid/:teamid', async (req, res) => {
         TODO: Complete Documentation
     }
 */
-router.get('/:orgid/:assignmentid/:teamid', async (req, res) => {
+router.get('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
 
 });
 
@@ -245,7 +331,7 @@ router.get('/:orgid/:assignmentid/:teamid', async (req, res) => {
         TODO: Complete Documentation 
     }
 */
-router.post('/:orgid/:assignmentid/:teamid', async (req, res) => {
+router.post('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
 
 });
 
@@ -257,7 +343,7 @@ router.post('/:orgid/:assignmentid/:teamid', async (req, res) => {
         assignedTo: userid or null
     }
 */
-router.put('/:orgid/:assignmentid/:teamid', async (req, res) => {
+router.put('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
 
 });
 
@@ -268,7 +354,7 @@ router.put('/:orgid/:assignmentid/:teamid', async (req, res) => {
         name: 'task/todo name'
     }
 */
-router.delete('/:orgid/:assignmentid/:teamid', async (req, res) => {
+router.delete('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
 
 });
 

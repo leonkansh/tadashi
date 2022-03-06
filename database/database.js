@@ -63,10 +63,16 @@ async function main() {
             description: String,
             data: [{
                 teamid: Number,
-                leader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                leader: {
+                    _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                    name: String
+                },
                 todos: [{
                     content: String, // Content of todo
-                    userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                    userid: {
+                        _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                        name: String
+                    },
                     date: Date,
                     completed: Boolean
                 }]
