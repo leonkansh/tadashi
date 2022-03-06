@@ -8,6 +8,7 @@ import loginRouter from './routes/login.js';
 import usersRouter from './routes/api/users.js';
 import orgsRouter from './routes/api/org.js';
 import chartersRouter from './routes/api/charters.js';
+import assignmentsRouter from './routes/api/assignments.js';
 
 import db from './database/database.js';
 import sessions from 'express-session';
@@ -73,5 +74,6 @@ app.use("/login", loginRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/org", orgsRouter);
 app.use("/api/charters", chartersRouter);
+app.use("/api/assignments", assignmentsRouter);
 
 export default app;
