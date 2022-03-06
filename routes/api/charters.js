@@ -1,8 +1,16 @@
+/*
+    Router handler for requests to:
+        /api/charters
+*/
 import express from 'express';
 import { verifyTeamMember } from '../authenticate.js';
 var router = express.Router()
 
-// GET: /{orgid}/{teamid} : retrieve all charters for team underneath org
+/* GET: /{orgid}/{teamid}
+    Returns all charters for team number in organization
+    Returns null if no charters found
+    Team Member authentication required
+*/
 router.get('/:orgid/:teamid', async (req, res) => {
     let auth = await verifyTeamMember(
         req.session.userid,
@@ -16,7 +24,11 @@ router.get('/:orgid/:teamid', async (req, res) => {
                 orgid: req.params.orgid,
                 teamid: req.params.teamid
             });
-            res.send(charters.data);
+            if(charters != null) {
+                res.send(charters.data);
+            } else {
+                res.send(null);
+            }
         } catch(error) {
             res.json({
                 status: 'error',
@@ -31,7 +43,16 @@ router.get('/:orgid/:teamid', async (req, res) => {
     }
 });
 
-// POST: /{orgid}/{teamid} : post new charter for team underneath org
+/* POST: /{orgid}/{teamid}
+    Post new charter for team number in organization
+    Payload Body:
+    {
+        name: 'charter name',
+        content: 'contents of charter',
+        meetingTimes: [Date] or null
+    }
+    Team Member authentication required
+*/
 router.post('/:orgid/:teamid', async (req, res) => {
     let auth = await verifyTeamMember(
         req.session.userid,
@@ -79,7 +100,16 @@ router.post('/:orgid/:teamid', async (req, res) => {
     }
 });
 
-// PUT: /{orgid}/{teamid} : edit charter for team underneath org
+/* PUT: /{orgid}/{teamid}
+    Edit charter for team number in organization
+    Payload Body:
+    {
+        name: 'target charter',
+        content: 'updated charter content OR existing content',
+        meetingTimes: [Date] or null
+    }
+    Team Member authentication required
+*/
 router.put('/:orgid/:teamid', async (req, res) => {
     let auth = await verifyTeamMember(
         req.session.userid,
@@ -118,7 +148,14 @@ router.put('/:orgid/:teamid', async (req, res) => {
     }
 });
 
-// DELETE: /{orgid}/{teamid} : remove specific charter for team underneath org
+/* DELETE: /{orgid}/{teamid}
+    Remove specific charter for team in organization
+    Payload Body:
+    {
+        name: 'name of charter to remove'
+    }
+    Team Member authentication required
+*/
 router.delete('/:orgid/:teamid', async (req, res) => {
     let auth = await verifyTeamMember(
         req.session.userid,

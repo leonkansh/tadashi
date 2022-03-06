@@ -1,7 +1,22 @@
+/*
+    Routing handler for requests to:
+        /api/users
+*/
 import express from 'express';
 var router = express.Router();
 
-// GET: /{userid} : returns a user profile
+/* GET: /{userid}
+        Returns a user profile based on a specified user id, containing
+        {
+            email: 'email address',
+            displayName: 'users display name'
+        }
+        If requested user is authenticated returns above in addition:
+        {
+            admin: [Organizations Owned],
+            orgs: [Organizations Joined]
+        }
+*/
 router.get('/:userid', async (req, res) => {
     try {
         const sessionUserId = req.session.userid;
@@ -28,8 +43,13 @@ router.get('/:userid', async (req, res) => {
     }
 });
 
-/* PUT: /{userid} : edit a user profile
-        user authentication is required
+/* PUT: /{userid}
+    Edit specified users profile
+    Payload Body:
+    {
+        name: 'Users new display name'
+    }
+    User authentication required for specified account
 */
 router.put('/:userid', async (req, res) => {
     try {
@@ -60,7 +80,10 @@ router.put('/:userid', async (req, res) => {
     }
 });
 
-// DELETE: /{userid} : drop user from database, done by setting fields to empty
+/* DELETE: /{userid}
+    Delete specified user from database
+    User authentication required for specified account
+*/
 router.delete('/:userid', async(req, res) => {
     try {
         if(req.session.isAuthenticated) {

@@ -1,8 +1,19 @@
+/*
+    Routing handler for requests to:
+        /api/org
+*/
 import express from 'express';
 var router = express.Router();
 
-/* POST: /create : create an organization
-        user authentication is required
+/* POST: /create
+    Create a new organization, sets logged user as administrator
+    Payload body:
+    {
+        name: 'organizations name',
+        description: 'organizations description',
+        accessCode: 'organizations access code'
+    }
+    User authentication required
 */
 router.post('/create', async (req, res) => {
     try {
@@ -43,19 +54,35 @@ router.post('/create', async (req, res) => {
     }
 });
 
-/* GET: /{orgid} : return the organization description, teams, ...
-        add information as needed
+/* GET: /{orgid} 
+    Return organization specified by id:
+    {
+        name: 'organization name',
+        admin: 'administrator's name',
+        description: 'organizations description,
+        members: [joined members],
+        teams: [formed teams]
+    }
+    If authorized as admin of organization, returns in addition to above:
+    {
+        accessCode: 'organizations access code'
+    }
 */
 router.get('/:orgid', async (req, res) => {
     try {
         const orgid = req.params.orgid;
-        let org = await req.db.Org.findById(orgid);
+        const org = await req.db.Org.findById(orgid);
+        let accessCode = null;
+        if(org.admin._id == req.session.userid) {
+            accessCode = org.accessCode;
+        }
         res.json({
             name: org.name,
             admin: org.admin.name,
             description: org.description,
             members: org.members,
-            teams: org.teams
+            teams: org.teams,
+            accessCode: accessCode
         });
     } catch (error) {
         res.json({
@@ -65,8 +92,15 @@ router.get('/:orgid', async (req, res) => {
     }
 });
 
-// PUT: /{orgid} : edit the organization description and name
-    // admin authentication is required
+/* PUT: /{orgid}
+    Edit the organization, by id, description and name
+    Payload Body:
+    {
+        name: 'new organization name',
+        description: 'new organization description'
+    }
+    Admin authentication required
+*/
 router.put('/:orgid', async (req, res) => {
     try {
         const sessionUserId = req.session.userid;
@@ -92,8 +126,10 @@ router.put('/:orgid', async (req, res) => {
     };
 });
 
-// DELETE: /{orgid} : delete the entire organization
-    // user authentication is required
+/* DELETE: /{orgid}
+    Delete the organization by id
+    Admin authentication required
+*/
 router.delete('/:orgid', async (req, res) => {
     if (!req.session.isAuthenticated) {
         res.json({
@@ -167,8 +203,14 @@ router.delete('/:orgid', async (req, res) => {
     }
 });
 
-// POST: /{orgid}/join : add a user to this org
-    // user authentication is required
+/* POST: /{orgid}/join
+    Adds logged user to specified organization.
+    Payload Body:
+    {
+        accessCode: 'organizations access code'
+    }
+    User authentication required
+*/
 router.post('/:orgid/join', async (req, res) => {
     if (!req.session.isAuthenticated) {
         res.json({
@@ -219,8 +261,10 @@ router.post('/:orgid/join', async (req, res) => {
     }
 });
 
-// POST: /{orgid}/leave : remove a user from this org
-    // user themselves only
+/* POST: /{orgid}/leave
+    Remove logged in user from specified organization
+    User authentication required
+*/
 router.post('/:orgid/leave', async (req, res) => {
     if (req.session.isAuthenticated) {
         const sessionUserId = req.session.userid;
@@ -272,7 +316,9 @@ router.post('/:orgid/leave', async (req, res) => {
     }
 });
 
-// GET: /{orgid}/members : return a list of members in this org
+/* GET: /{orgid}/members
+    Return a list of members specified organization
+*/
 router.get('/:orgid/members', async (req, res) => {
     try {
         const orgid = req.params.orgid;
@@ -288,9 +334,14 @@ router.get('/:orgid/members', async (req, res) => {
     }
 });
 
-// POST: /{orgid}/kick : 
-    // body: targetUser = userid
-    // admin only
+/* POST: /{orgid}/kick
+    Remove a user from specified organization
+    Payload Body:
+    {
+        targetUser: 'user id of user to be removed'
+    }
+    Admin authentication required
+*/
 router.post('/:orgid/kick', async (req, res) => {
     if (req.session.isAuthenticated) {
         const sessionUserId = req.session.userid;
@@ -351,7 +402,14 @@ router.post('/:orgid/kick', async (req, res) => {
     } 
 });
 
-// POST: /{orgid}/teams/random : put the entire org into random teams
+/* POST: /{orgid}/teams/random
+    Randomize all joined members of specified into teams
+    Payload Body:
+    {
+        teamSize: Integer specifying desired team sizes
+    }
+    Admin authentication required
+*/
 router.post('/:orgid/teams/random', async (req, res) => {
     if (req.session.isAuthenticated) {
         try {
