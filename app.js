@@ -9,6 +9,7 @@ import usersRouter from './routes/api/users.js';
 import orgsRouter from './routes/api/org.js';
 import chartersRouter from './routes/api/charters.js';
 import assignmentsRouter from './routes/api/assignments.js';
+import messagesRouter from './routes/api/msg.js';
 
 import db from './database/database.js';
 import sessions from 'express-session';
@@ -40,8 +41,8 @@ app.use(sessions({
 // Temp account setup, delete and test POSTMAN with MS signin
 // May be advised for simple account tracking for now :(
 app.use((req, res, next) => {
-    let username = 1;
-    req.session.userid = '621d26cf398db9b58f5a82b8';
+    let username = 2;
+    req.session.userid = '621d2726398db9b58f5a831a';
     req.session.account = {
         username: username,
         name: `Test User: ${username}`
@@ -75,5 +76,6 @@ app.use("/api/users", usersRouter);
 app.use("/api/org", orgsRouter);
 app.use("/api/charters", chartersRouter);
 app.use("/api/assignments", assignmentsRouter);
+app.use("/api/msg", messagesRouter);
 
 export default app;

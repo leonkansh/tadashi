@@ -50,7 +50,10 @@ async function main() {
         teamid: Number,
         message: [{
             date: Date,
-            sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            sender: {
+                _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+                name: String
+            },
             content: String,
             flag: Number // 0: no hl, 1: meeting, 2: important
         }]
