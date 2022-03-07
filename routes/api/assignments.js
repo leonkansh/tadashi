@@ -131,10 +131,10 @@ router.get('/:orgid/:assignmentid', async (req, res) => {
 
 /* PUT: /{orgid}/{assignmentid}
     Edit specific assignment in organization
-    Payload Body:
+    Payload Body, exclude fields with no changes:
     {
-        name: 'assignment name' (resend current name if no changes),
-        description: 'assignment description' (resend current description if no changes)
+        name: 'assignment name',
+        description: 'assignment description'
     }
     Admin authentication required.
 */
@@ -142,15 +142,29 @@ router.put('/:orgid/:assignmentid', async (req, res) => {
     try {
         const org = await req.db.Org.findById(req.params.orgid);
         if(org.admin._id == req.session.userid) {
-            // Refactor target, can do in one call
-            const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
-            for(let i = 0; i < assignmentDoc.assignments.length; i++) {
-                if (assignmentDoc.assignments[i]._id == req.params.assignmentid) {
-                    assignmentDoc.assignments[i].name = req.body.name;
-                    assignmentDoc.assignments[i].description = req.body.description;
-                }
+            let changes = {};
+            if(req.body.name) {
+                changes['assignments.$[el].name'] = req.body.name;
             }
-            assignmentDoc.save();
+            if(req.body.description) {
+                changes['assignments.$[el].description'] = req.body.description;
+            }
+            await req.db.Assignment.findOneAndUpdate(
+                {
+                    orgid: req.params.orgid
+                },
+                {
+                    $set: changes
+                },
+                {
+                    arrayFilters:
+                    [
+                        {
+                            'el._id': req.params.assignmentid
+                        }
+                    ]
+                }
+            );
             res.json({ status: 'success' });
         } else {
             res.json({
@@ -209,13 +223,14 @@ router.delete('/:orgid/:assignmentid', async (req, res) => {
     AUTHENTICATION LEVEL: Team member
 */
 
-/* GET: /{orgid}/{teamid}
+/* GET: /{orgid}/team/{teamid}
     Retrieve all assignments for a team in an organization
     Instances assignments on first assignment
     Used to retrieve alignments for horizontal scrolling
     Return:
     [
         {
+            _id: 'assignment id',
             name: 'assignment name',
             description: 'assignment description',
             leader:
@@ -258,6 +273,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                     if(data.teamid == req.params.teamid) {
                         teamFound = true;
                         assignments.push({
+                            _id: assignment._id,
                             name: assignment.name,
                             description: assignment.description,
                             leader: data.leader,
@@ -287,6 +303,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                         }
                     ).exec();
                     assignments.push({
+                        _id: assignment._id,
                         name: assignment.name,
                         description: assignment.description,
                         leader: {
@@ -313,49 +330,281 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
     }
 });
 
-/* GET: /{orgid}/{assignmentid}/{teamid}
-    Retrieve todo list for specific assignment and organizations team
+/* GET: /{orgid}/{assignmentid}/team/{teamid}
+    Retrieve todo list and extra data for specific assignment and organizations team
     Return:
     {
-        TODO: Complete Documentation
+        _id: 'assignment id',
+        name: 'assignment name,
+        description: 'assignment description',
+        leader:
+        {
+            _id: 'leader id',
+            name: 'leader name'
+        }
+        todos:
+        [
+            {
+                content: 'todo content',
+                userid: 
+                {
+                    _id: 'assigned user id',
+                    name: 'assigned user name'
+                }
+                date: 'target completion date',
+                completed: Boolean, T - has been finished; F - has not been finished
+            }
+        ]
     }
 */
 router.get('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
-
+    let auth = verifyTeamMember(
+        req.session.userid,
+        req.params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if(auth) {
+        try {
+            const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
+            let assignment = null;
+            for(const assign of assignmentDoc.assignments) {
+                if(assign._id == req.params.assignmentid) {
+                    assignment = assign;
+                }
+            }
+            if(assignment) {
+                let datum = null;
+                for(const data of assignment.data) {
+                    if(data.teamid == req.params.teamid) {
+                        datum = data
+                    }
+                }
+                if(datum) {
+                    res.json({
+                        _id: assignment._id,
+                        name: assignment.name,
+                        description: assignment.description,
+                        leader:
+                        {
+                            _id: datum.leader._id,
+                            name: datum.leader.name
+                        },
+                        todos: datum.todos
+                    });
+                } else {
+                    res.json({
+                        status: 'error',
+                        error: '404'
+                    });
+                }
+            } else {
+                res.json({
+                    status: 'error',
+                    error: '404'
+                });
+            }
+        } catch (error) {
+            console.log(error);
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
 });
 
-/* POST: /{orgid}/{assignmentid}/{teamid}
+/* POST: /{orgid}/{assignmentid}/team/{teamid}
     Add item to todo list for assignment on a organizations team
     Payload Body:
     {
-        TODO: Complete Documentation 
+        content: 'content of todo',
+        date: Date, date todo is due,
+        assignedId: 'user id of assigned user',
+        assignedName: 'user name of assigned user'
     }
 */
 router.post('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
-
+    let auth = verifyTeamMember(
+        req.session.userid,
+        req.params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if (auth) {
+        try {
+            await req.db.Assignment.findOneAndUpdate(
+                {
+                    orgid: req.params.orgid
+                },
+                {
+                    $push: {
+                        'assignments.$[ela].data.$[eld].todos': {
+                            content: req.body.content,
+                            userid: {
+                                _id: req.body.assignedId,
+                                name: req.body.assignedName
+                            },
+                            date: req.body.date,
+                            completed: false
+                        }
+                    }
+                },
+                {
+                    arrayFilters:
+                    [
+                        {
+                            'ela._id': req.params.assignmentid
+                        },
+                        {
+                            'eld.teamid': req.params.teamid
+                        }
+                    ]
+                }
+            );
+            res.json({ status: 'success' });
+        } catch(error) {
+            console.log(error);
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        } 
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
 });
 
-/* PUT: /{orgid}/{assignmentid}/{teamid}
+/* PUT: /{orgid}/{assignmentid}/team/{teamid}
     Edit task underneath assignment. If assignedTo is non-null, assigns task to userid
-    Payload Body:
+    Payload Body, exclude unchanged fields:
     {
-        TODO: Complete Documentation,
-        assignedTo: userid or null
+        todoId: 'todo id'; required,
+        content: 'changed todo content',
+        date: 'changed todo date',
+        completed: Boolean,
+        assignedId: 'changed assigned userid'; if supplied must supply assignedName,
+        assignedName: 'changed assigned username'; if supplied must supply assignedId,
     }
 */
 router.put('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
-
+    let auth = verifyTeamMember(
+        req.session.userid,
+        req.params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if(auth) {
+        try {
+            let changes = {}
+            if(req.body.content) {
+                changes['assignments.$[ela].data.$[eld].todos.$[elt].content'] = req.body.content;
+            }
+            if(req.body.date) {
+                changes['assignments.$[ela].data.$[eld].todos.$[elt].date'] = req.body.date;
+            }
+            if(req.body.completed) {
+                changes['assignments.$[ela].data.$[eld].todos.$[elt].completed'] = req.body.completed;
+            }
+            if(req.body.assignedId) {
+                changes['assignments.$[ela].data.$[eld].todos.$[elt].userid'] = {
+                    _id: req.body.assignedId,
+                    name: req.body.assignedName
+                }
+            }
+            await req.db.Assignment.findOneAndUpdate(
+                {
+                    orgid: req.params.orgid
+                },
+                {
+                    $set: changes
+                },
+                {
+                    arrayFilters:
+                    [
+                        {
+                            'ela._id': req.params.assignmentid
+                        },
+                        {
+                            'eld.teamid': req.params.teamid
+                        },
+                        {
+                            'elt._id': req.body.todoId
+                        }
+                    ]
+                }
+            );
+            res.json({ status: 'success' });
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
 });
 
-/* DELETE: /{orgid}/{assignmentid}/{teamid}
+/* DELETE: /{orgid}/{assignmentid}/team/{teamid}
     Delete specified task/todo by name underneath assignment
     Payload Body:
     {
-        name: 'task/todo name'
+        todoId: 'todo id'
     }
 */
 router.delete('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
-
+    let auth = verifyTeamMember(
+        req.session.userid,
+        req.params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if (auth) {
+        try {
+            await req.db.Assignment.findOneAndUpdate(
+                {
+                    orgid: req.params.orgid
+                },
+                {
+                    $pull:
+                    {
+                        'assignments.$[ela].data.$[eld].todos': { _id: req.body.todoId }
+                    }
+                },
+                {
+                    arrayFilters:
+                    [
+                        {
+                            'ela._id': req.params.assignmentid
+                        },
+                        {
+                            'eld.teamid': req.params.teamid
+                        }
+                    ]
+                }
+            );
+            res.send({ status: 'success' });
+        } catch(error) {
+            console.log(error);
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
 });
 
 /*------ EXTRA COMMANDS ------*/
