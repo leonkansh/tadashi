@@ -94,20 +94,23 @@ async function main() {
         }]
     });
 
-    // const postBoardSchema = new mongoose.Schema({
-    //     orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
-    //     teamid: Number,
-    //     date: Date,
-    //     expiration: Date, // date + time
-    //     content: String
-    // });
+    const postBoardSchema = new mongoose.Schema({
+        orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        teamid: Number,
+        posts: [{
+            poster: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+            date: Date,
+            title: String,
+            content: String
+        }]
+    });
 
     db.User = mongoose.model('User', userSchema);
     db.Org = mongoose.model('Org', orgSchema);
     db.Msg = mongoose.model('Msg', msgSchema);
     db.Assignment = mongoose.model('Assignment', assignmentSchema);
     db.Charter = mongoose.model('Charter', charterSchema);
-    // db.Board = mongoose.model('Board', postBoardSchema);
+    db.Board = mongoose.model('Board', postBoardSchema);
 }
 
 export default db;

@@ -10,6 +10,7 @@ import orgsRouter from './routes/api/org.js';
 import chartersRouter from './routes/api/charters.js';
 import assignmentsRouter from './routes/api/assignments.js';
 import messagesRouter from './routes/api/msg.js';
+import boardsRouter from './routes/api/boards.js';
 
 import db from './database/database.js';
 import sessions from 'express-session';
@@ -77,5 +78,6 @@ app.use("/api/org", orgsRouter);
 app.use("/api/charters", chartersRouter);
 app.use("/api/assignments", assignmentsRouter);
 app.use("/api/msg", messagesRouter);
+app.use("/api/board", boardsRouter);
 
 export default app;
