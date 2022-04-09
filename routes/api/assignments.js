@@ -17,7 +17,8 @@ let router = express.Router()
     [
         {
             name: 'assignment name',
-            description: 'assignment description
+            description: 'assignment description,
+            due: Date assignment due
         }
     ]
 */
@@ -29,7 +30,8 @@ router.get('/:orgid', async (req, res) => {
             assignments.push({
                 _id: assign._id,
                 name: assign.name,
-                description: assign.description
+                description: assign.description,
+                due: assign.due
             });
         });
         res.send(assignments);
@@ -47,7 +49,8 @@ router.get('/:orgid', async (req, res) => {
     Payload Body:
     {
         name: 'assignment name',
-        description: 'assignment description'
+        description: 'assignment description',
+        due: Date assignment due
     }
     Admin authentication required.
 */
@@ -67,6 +70,7 @@ router.post('/:orgid', async (req, res) => {
                         assignments: {
                             name: req.body.name,
                             description: req.body.description,
+                            due: req.body.due,
                             data: []
                         }
                     }
@@ -97,7 +101,8 @@ router.post('/:orgid', async (req, res) => {
     {
         _id: 'assignment id',
         name: 'assignment name',
-        description: 'assignment description'
+        description: 'assignment description',
+        due: Date assignment due
     }
 */
 router.get('/:orgid/:assignmentid', async (req, res) => {
@@ -113,7 +118,8 @@ router.get('/:orgid/:assignmentid', async (req, res) => {
             res.json({
                 _id: assignment._id,
                 name: assignment.name,
-                description: assignment.description
+                description: assignment.description,
+                due: assignment.due
             });
         } else {
             res.json({
@@ -134,7 +140,8 @@ router.get('/:orgid/:assignmentid', async (req, res) => {
     Payload Body, exclude fields with no changes:
     {
         name: 'assignment name',
-        description: 'assignment description'
+        description: 'assignment description',
+        due: Date assignment due
     }
     Admin authentication required.
 */
@@ -148,6 +155,9 @@ router.put('/:orgid/:assignmentid', async (req, res) => {
             }
             if(req.body.description) {
                 changes['assignments.$[el].description'] = req.body.description;
+            }
+            if(req.body.due) {
+                changes['assignments.$[el].due'] = req.body.due;
             }
             await req.db.Assignment.findOneAndUpdate(
                 {
@@ -233,6 +243,7 @@ router.delete('/:orgid/:assignmentid', async (req, res) => {
             _id: 'assignment id',
             name: 'assignment name',
             description: 'assignment description',
+            due: Date assignment due,
             leader:
             {
                 _id: 'leader id',
@@ -276,6 +287,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                             _id: assignment._id,
                             name: assignment.name,
                             description: assignment.description,
+                            due: assignment.due,
                             leader: data.leader,
                             todos: data.todos
                         });
@@ -306,6 +318,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                         _id: assignment._id,
                         name: assignment.name,
                         description: assignment.description,
+                        due: assignment.due,
                         leader: {
                             _id: memberList[counter % memberList.length]._id,
                             name: memberList[counter % memberList.length].name
@@ -337,6 +350,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
         _id: 'assignment id',
         name: 'assignment name,
         description: 'assignment description',
+        due: Date assignment due
         leader:
         {
             _id: 'leader id',
@@ -385,6 +399,7 @@ router.get('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
                         _id: assignment._id,
                         name: assignment.name,
                         description: assignment.description,
+                        due: assignment.due,
                         leader:
                         {
                             _id: datum.leader._id,

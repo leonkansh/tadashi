@@ -64,6 +64,7 @@ async function main() {
         assignments: [{
             name: String, // Name of assignment
             description: String,
+            due: Date,
             data: [{
                 teamid: Number,
                 leader: {
