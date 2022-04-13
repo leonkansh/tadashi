@@ -13,27 +13,43 @@ var router = express.Router();
         }
         If requested user is authenticated returns above in addition:
         {
-            admin: [Organizations Owned],
-            orgs: [Organizations Joined]
+            admin: [
+                _id: org id of owned organization,
+                name: name of owned organization
+            ]
+            orgs: [
+                {
+                    _id:
+                    {
+                        _id: org id of joined organization
+                        name: name of joined organization
+                    }
+                }
+                name: name of joined organization (outdated)
+                teamid: id of team within organization
+            ]
         }
+        Note: If user is not assigned a team, teamid will be non-existent
 */
 router.get('/:userid', async (req, res) => {
     try {
         const sessionUserId = req.session.userid;
         const userid = req.params.userid;
-        let user = await req.db.User.findById(userid).exec();
+        let user = await req.db.User.findById(userid)
+            .populate('orgs._id', '_id name')
+            .exec();
         if (sessionUserId == userid) {
             res.json({
                 email: user.email,
                 displayName: user.displayName,
                 admin: user.admin,
                 orgs: user.orgs
-            })
+            });
         } else { 
             res.json({
                 email: user.email,
                 displayName: user.displayName
-            })
+            });
         }
     } catch(error) {
         res.json({

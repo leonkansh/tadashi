@@ -3,6 +3,7 @@
         /api/org
 */
 import express from 'express';
+import { verifyTeamMember, retrieveTeamMembers } from '../authenticate.js';
 var router = express.Router();
 
 /* POST: /create
@@ -473,6 +474,57 @@ router.post('/:orgid/teams/random', async (req, res) => {
                 error: '404'
             });
         }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+});
+
+/* GET: /{orgid}/team/{teamid}
+    Returns members of the associated team within an organization
+    Requires authentication and team membership.
+    Return Payload:
+    {
+        _id: id of organization,
+        teams: [
+            {
+                members: [
+                    _id:
+                    {
+                        _id: user id of member,
+                        email: email of member,
+                        displayName: user name of member
+                    },
+                    name: original name of member
+                ]
+            },
+            teamid: id of team in organization,
+            name: name of team in organization,
+            _id: internal id of team in organization
+        ]
+    }
+*/
+router.get('/:orgid/team/:teamid', async (req, res) => {
+    let auth = await verifyTeamMember(
+        req.session.userid,
+        req.params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if(auth) {
+        let team = await req.db.Org.findById(req.params.orgid)
+            .select({
+                teams: {
+                    $elemMatch: {
+                        'teams.teamid': req.params.teamid
+                    }
+                }
+            })
+            .populate('teams.members._id', '_id displayName email');
+        res.send(team)
+
     } else {
         res.json({
             status: 'error',
