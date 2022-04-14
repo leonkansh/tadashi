@@ -11,6 +11,7 @@ import chartersRouter from './routes/api/charters.js';
 import assignmentsRouter from './routes/api/assignments.js';
 import messagesRouter from './routes/api/msg.js';
 import boardsRouter from './routes/api/boards.js';
+import cors from 'cors';
 
 import db from './database/database.js';
 import sessions from 'express-session';
@@ -29,6 +30,7 @@ app.use((req, res, next) => {
     req.db = db;
     next();
 });
+app.use(cors())
 
 const oneDay = 1000 * 60 * 60 * 24;
 const secret = Math.random().toString(36).replace(/[^a-z]+/g, '').substring(0, 25);
