@@ -328,6 +328,10 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                     counter++;
                 }
             };
+            assignments.sort((a, b) => a.due - b.due);
+            assignments.forEach(asg => {
+                asg.todos.sort((a, b) => a.date - b.date);
+            });
             res.send(assignments);
         } catch(error) {
             res.json({
@@ -395,6 +399,7 @@ router.get('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
                     }
                 }
                 if(datum) {
+                    datum.todos.sort((a, b) => a.date - b.date);
                     res.json({
                         _id: assignment._id,
                         name: assignment.name,
@@ -424,6 +429,78 @@ router.get('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
             res.json({
                 status: 'error',
                 error: 'oops'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+});
+
+/* GET: /{orgid}/team/{teamid}/head
+    Retrieve first three todo list items for current user for next assignment
+    Return:
+    {
+        hwaName: name of assignment,
+        hwaDescription: description of assignment,
+        hwaDue: date assignment due,
+        data: [
+            {
+                userid: {
+                    _id: assigned user id,
+                    name: assigned user name
+                },
+                content: todo description,
+                date: date todo due,
+                completed: Boolean if tod complete,
+                _id: todo id
+            }
+        ]
+    }
+*/
+router.get('/:orgid/team/:teamid/head', async (req, res) => {
+    let auth = verifyTeamMember(
+        req.session.userid,
+        req.params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if(auth) {
+        try {
+            let assignmentsDoc = await req.db.Assignment.findOne({orgid: req.params.orgid});
+            assignmentsDoc.assignments.sort((a, b) => a.due - b.due);
+            let index = -1;
+            for(let i = 0; i < assignmentsDoc.assignments.length; i++) {
+                if(assignmentsDoc.assignments[i].due - Date.now() > 0 && index == -1) {
+                    index = i;
+                }
+            }
+            let assignment = assignmentsDoc.assignments[index];
+            let teamdoc = null;
+            assignment.data.forEach(team => {
+                if(team.teamid == req.params.teamid) {
+                    teamdoc = team;
+                }
+            });
+            teamdoc.todos.sort((a, b) => a.date - b.date);
+            let todoPayload = []
+            teamdoc.todos.forEach(todo => {
+                if(todo.userid._id == req.session.userid && todoPayload.length < 3) {
+                    todoPayload.push(todo);
+                }
+            });
+            res.json({
+                hwaName: assignment.name,
+                hwaDescription: assignment.description,
+                hwaDue: assignment.due,
+                data: todoPayload
+            });
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: 'oof'
             });
         }
     } else {
