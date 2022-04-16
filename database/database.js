@@ -87,7 +87,9 @@ async function main() {
     const charterSchema = new mongoose.Schema({
         orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
         teamid: Number,
+        baseCount: Number,
         data: [{
+            completed: Boolean,
             name: String,
             content: String,
             meetingTimes: [Date] // leave null if not meeting times

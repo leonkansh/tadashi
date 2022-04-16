@@ -4,11 +4,30 @@
 */
 import express from 'express';
 import { verifyTeamMember } from '../authenticate.js';
+import baseCharters from '../baseCharters.js';
 var router = express.Router()
 
 /* GET: /{orgid}/{teamid}
     Returns all charters for team number in organization
     Returns null if no charters found
+    Return:
+    {
+        _id: charter doc id,
+        orgid: organization id,
+        teamid: team id,
+        __v: document version number (ignore),
+        baseCount: number of base charters completed. >=3 all completed,
+        data:
+        [
+            {
+                completed: Boolean if charter is finished, false for init base,
+                name: name of charter,
+                content: inner details of charter,
+                meetingTimes: [Date],
+                _id: charter id
+            }
+        ]
+    }
     Team Member authentication required
 */
 router.get('/:orgid/:teamid', async (req, res) => {
@@ -20,12 +39,26 @@ router.get('/:orgid/:teamid', async (req, res) => {
     );
     if(auth) {
         try {
-            const charters = await req.db.Charter.findOne({
-                orgid: req.params.orgid,
-                teamid: req.params.teamid
-            });
+            const charters = await req.db.Charter.findOneAndUpdate(
+                {
+                    orgid: req.params.orgid,
+                    teamid: req.params.teamid
+                },
+                {
+                    $setOnInsert: {
+                        orgid: req.params.orgid,
+                        teamid: req.params.teamid,
+                        baseCount: 0,
+                        data: baseCharters
+                    }
+                },
+                {
+                    upsert: true,
+                    new: true
+                }
+            );
             if(charters != null) {
-                res.send(charters.data);
+                res.send(charters);
             } else {
                 res.send(null);
             }
@@ -74,6 +107,7 @@ router.post('/:orgid/:teamid', async (req, res) => {
                     },
                     $push: {
                         data: {
+                            completed: true,
                             name: req.body.name,
                             content: req.body.content,
                             meetingTimes: req.body.meetingTimes
@@ -118,6 +152,7 @@ router.put('/:orgid/:teamid', async (req, res) => {
         req.db
     );
     if(auth) {
+        const baseNames = ['Meeting Times', 'Goals', 'Communication'];
         try {
             const charter = await req.db.Charter.findOne({
                 orgid: req.params.orgid,
@@ -127,6 +162,10 @@ router.put('/:orgid/:teamid', async (req, res) => {
                 if (charter.data[i].name == req.body.name) {
                     charter.data[i].content = req.body.content;
                     charter.data[i].meetingTimes = req.body.meetingTimes;
+                    if(baseNames.includes(req.body.name) && !charter.data[i].completed) {
+                        charter.data[i].completed = true;
+                        charter.baseCount++;
+                    }
                 }
             }
             charter.save();

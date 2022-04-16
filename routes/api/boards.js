@@ -44,6 +44,7 @@ router.get('/:orgid/:teamid', async (req, res) => {
                     returnDocument: 'after'
                 }
             );
+            boardDoc.posts.sort((a, b) => b.date - a.date);
             let returnPosts = [];
             for(const post of boardDoc.posts) {
                 returnPosts.push(
