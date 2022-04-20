@@ -47,9 +47,12 @@ router.get('/:orgid/:teamid', async (req, res) => {
             boardDoc.posts.sort((a, b) => b.date - a.date);
             let returnPosts = [];
             for(const post of boardDoc.posts) {
+                let ownedCheck = false;
+                if(req.session.userid == post.poster) {ownedCheck = true;}
                 returnPosts.push(
                     {
                         _id: post._id,
+                        owned: ownedCheck,
                         date: post.date,
                         title: post.title,
                         content: post.content
