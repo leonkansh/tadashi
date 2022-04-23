@@ -55,7 +55,8 @@ router.get('/:orgid/:teamid', async (req, res) => {
                         owned: ownedCheck,
                         date: post.date,
                         title: post.title,
-                        content: post.content
+                        content: post.content,
+                        reactions: post.reactions
                     }
                 );
             }
@@ -103,13 +104,47 @@ router.post('/:orgid/:teamid', async (req, res) => {
                             poster: req.session.userid,
                             date: req.body.date,
                             title: req.body.title,
-                            content: req.body.content
+                            content: req.body.content,
+                            reactions: []
                         }
                     }
                 }
             ).exec();
             res.json({ status: 'success' });
         } catch(error) {
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+});
+
+/* POST: /{orgid}/{teamid}/react
+    React to a post
+    Payload Body:
+    {
+        emoji: emoji string character,
+        postid: _id of post being reacted to
+    }
+*/
+router.post('/:orgid/:teamid/react', async (req, res) => {
+    let auth = verifyTeamMember(
+        req.session.userid,
+        req,params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if(auth) {
+        try {
+
+
+        } catch (error) {
             res.json({
                 status: 'error',
                 error: 'oops'

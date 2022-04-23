@@ -48,7 +48,7 @@ router.get('/:orgid/:teamid', async (req, res) => {
                     upsert: true,
                     returnDocument: 'after'
                 }
-            );
+            ).populate('message.sender', '_id displayName');
             res.send(messageDoc.message);
         } catch(error) {
             console.log(error);
@@ -94,10 +94,7 @@ router.post('/:orgid/:teamid', async (req, res) => {
                         message:
                         {
                             date: req.body.date,
-                            sender: {
-                                _id: req.session.userid,
-                                name: req.session.account.name
-                            },
+                            sender: req.session.userid,
                             content: req.body.content,
                             flag: req.body.flag
                         }

@@ -12,10 +12,9 @@ async function main() {
     const userSchema = new mongoose.Schema({
         email: String,
         displayName: String,
-        admin: [{
-            _id: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
-            name: String
-        }],
+        hash: String,
+        salt: String,
+        admin: [{type: mongoose.Schema.Types.ObjectId, ref: "Org"}],
         orgs: [{
             _id: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
             teamid: Number,
@@ -25,21 +24,12 @@ async function main() {
 
     const orgSchema = new mongoose.Schema({
         name: String,
-        admin: {
-            _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-            name: String
-        },
+        admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         description: String, // can be empty
         accessCode: String,
-        members: [{
-            _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-            name: String
-        }],
+        members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
         teams: [{ // initialize null
-            members: [{
-                _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-                name: String
-            }],
+            members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
             teamid: Number,
             name: String
         }]
@@ -50,10 +40,7 @@ async function main() {
         teamid: Number,
         message: [{
             date: Date,
-            sender: {
-                _id: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-                name: String
-            },
+            sender: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             content: String,
             flag: Number // 0: no hl, 1: meeting, 2: important
         }]
@@ -92,8 +79,12 @@ async function main() {
             completed: Boolean,
             name: String,
             content: String,
-            meetingTimes: [Date] // leave null if not meeting times
-            // if needed, add extra fields and leave null
+            meetingTimes: [{
+                name: String,
+                weekday: Number,
+                start: Number,
+                end: Number
+            }]
         }]
     });
 
@@ -104,7 +95,11 @@ async function main() {
             poster: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
             date: Date,
             title: String,
-            content: String
+            content: String,
+            reactions: [{
+                emoji: String,
+                users: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }]
+            }]
         }]
     });
 

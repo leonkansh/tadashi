@@ -7,7 +7,7 @@ async function verifyTeamMember(userid, orgid, teamid, db) {
            if(teamList[j].teamid == teamid) {
                const memList = teamList[j].members;
                for(let i = 0; i < memList.length; i++) {
-                   if(memList[i]._id == userid) {
+                   if(memList[i] == userid) {
                        return true;
                    }
                }
@@ -23,7 +23,7 @@ async function verifyTeamMember(userid, orgid, teamid, db) {
 async function retrieveTeamMembers(orgid, teamid, db) {
     try {
         const orgDoc = await db.Org.findById(orgid);
-        const teamList = orgDoc.teams;
+        const teamList = orgDoc.teams.populate('members', 'id displayName');
         for(let i = 0; i < teamList.length; i++) {
             if(teamList[i].teamid == teamid) {
                 return teamList[i].members;

@@ -37,6 +37,7 @@ router.get('/:userid', async (req, res) => {
         const userid = req.params.userid;
         let user = await req.db.User.findById(userid)
             .populate('orgs._id', '_id name')
+            .populate('admin', '_id name')
             .exec();
         if (sessionUserId == userid) {
             res.json({
@@ -78,6 +79,7 @@ router.put('/:userid', async (req, res) => {
         if (sessionUserId == userid) {
             user.save();
             res.json({
+                status: 'success',
                 displayName: req.body.name,
                 admin: user.admin,
                 orgs: user.orgs
@@ -132,12 +134,4 @@ router.delete('/:userid', async(req, res) => {
     }
 });
     
-// GET: /{userid}/connections : return a list of users whom this user works with
-
-// POST: /{usrid}/connections/add?user=[id] : add a user to this user by id
-    // user authentication is required
-
-// DELETE: /{usrid}/connections/remove?user=[id] : delete a connected user to this user by id
-    // user authentication is required
-
 export default router;
