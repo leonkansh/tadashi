@@ -136,14 +136,39 @@ router.post('/:orgid/:teamid', async (req, res) => {
 router.post('/:orgid/:teamid/react', async (req, res) => {
     let auth = verifyTeamMember(
         req.session.userid,
-        req,params.orgid,
+        req.params.orgid,
         req.params.teamid,
         req.db
     );
     if(auth) {
         try {
-
-
+            let boardDoc = await req.db.Board.findOne({
+                orgid: req.params.orgid,
+                teamid: req.params.teamid
+            }).select({
+                posts: {
+                    $elemMatch: {
+                        'posts._id': req.body.postid
+                    }
+                }
+            });
+            let index = boardDoc.posts[0].reactions.indexOf(req.body.emoji);
+            if (index == -1) {
+                boardDoc.posts[0].reactions.push({
+                    emoji: req.body.emoji,
+                    users: [req.session.userid]
+                });
+            } else {
+                let emojiItem = boardDoc.posts[0].reactions[index];
+                let userIndex = emojiItem.users.indexOf(req.session.userid);
+                if (userIndex == -1) {
+                    boardDoc.posts[0].reactions[index].users.push(req.session.userid);
+                } else {
+                    boardDoc.posts[0].reactions[index].users.splice(userIndex, 1);
+                }
+            }
+            boardDoc.save();
+            res.json(boardDoc.posts[0].reactions);
         } catch (error) {
             res.json({
                 status: 'error',

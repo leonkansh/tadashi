@@ -545,7 +545,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
     }
     Requires team authentication
 */
-router.put(':orgid/team/:teamid', async (req, res) => {
+router.put('/:orgid/team/:teamid', async (req, res) => {
     let auth = await verifyTeamMember(
             req.session.userid,
             req.params.orgid,
@@ -565,8 +565,8 @@ router.put(':orgid/team/:teamid', async (req, res) => {
             team.teams[0].name = req.body.teamName
             team.save()
 
-            team.teams[0].members.forEach(member => {
-                let memDoc = req.db.User.findById(member);
+            team.teams[0].members.forEach(async (member) => {
+                let memDoc = await req.db.User.findById(member);
                 let index = -1;
                 for(let i = 0; i < memDoc.orgs.length; i++) {
                     if(memDoc.orgs[i]._id == req.params.orgid) {
