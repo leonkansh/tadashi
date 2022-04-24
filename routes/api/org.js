@@ -518,7 +518,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                 .select({
                     teams: {
                         $elemMatch: {
-                            'teams.teamid': req.params.teamid
+                            teamid: req.params.teamid
                         }
                     }
                 })
@@ -558,7 +558,7 @@ router.put('/:orgid/team/:teamid', async (req, res) => {
                 .select({
                     teams: {
                         $elemMatch: {
-                            'teams.teamid': req.params.teamid
+                            teamid: req.params.teamid
                         }
                     }
                 });

@@ -2,20 +2,23 @@ const data = [
     {
         "completed": false,
         "name": "Meeting Times",
-        "content": "",
-        "meetingTimes": null
+        "profile": null,
+        "goals": null,
+        "meetingTimes": []
     },
     {
         "completed": false,
         "name": "Goals",
-        "content": "",
+        "profile": null,
+        "goals": [""],
         "meetingTimes": null
     },
     {
         "completed": false,
-        "name": "Communication",
-        "content": "",
-        "meetingTimes": null
+        "name": "Profile",
+        "profile": [],
+        "goals": null, 
+        "meetingTimes": null 
     }
 ]
 

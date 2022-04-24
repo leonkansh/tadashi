@@ -78,7 +78,11 @@ async function main() {
         data: [{
             completed: Boolean,
             name: String,
-            content: String,
+            profile: [{
+                name: String,
+                email: String
+            }],
+            goals: [String],
             meetingTimes: [{
                 name: String,
                 weekday: Number,

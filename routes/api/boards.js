@@ -148,7 +148,7 @@ router.post('/:orgid/:teamid/react', async (req, res) => {
             }).select({
                 posts: {
                     $elemMatch: {
-                        'posts._id': req.body.postid
+                        _id: req.body.postid
                     }
                 }
             });
