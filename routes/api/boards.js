@@ -152,7 +152,14 @@ router.post('/:orgid/:teamid/react', async (req, res) => {
                     }
                 }
             });
-            let index = boardDoc.posts[0].reactions.indexOf(req.body.emoji);
+            let index = -1;
+            for(let i = 0; i < boardDoc.posts[0].reactions.length; i++) {
+                let emojiNumber = boardDoc.posts[0].reactions[i].emoji.codePointAt(0);
+                let suppliedNumber = req.body.emoji.codePointAt(0);
+                if (emojiNumber == suppliedNumber) {
+                    index = i;
+                }
+            }
             if (index == -1) {
                 boardDoc.posts[0].reactions.push({
                     emoji: req.body.emoji,
@@ -165,6 +172,9 @@ router.post('/:orgid/:teamid/react', async (req, res) => {
                     boardDoc.posts[0].reactions[index].users.push(req.session.userid);
                 } else {
                     boardDoc.posts[0].reactions[index].users.splice(userIndex, 1);
+                    if (boardDoc.posts[0].reactions[index].users.length == 0) {
+                        boardDoc.posts[0].reactions.splice(index, 1);
+                    }
                 }
             }
             boardDoc.save();
