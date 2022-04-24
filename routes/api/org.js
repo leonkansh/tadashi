@@ -490,13 +490,11 @@ router.post('/:orgid/teams/random', async (req, res) => {
         teams: [
             {
                 members: [
-                    _id:
                     {
                         _id: user id of member,
                         email: email of member,
                         displayName: user name of member
-                    },
-                    name: original name of member
+                    }
                 ]
             },
             teamid: id of team in organization,

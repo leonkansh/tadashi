@@ -16,10 +16,11 @@ let router = express.Router();
             sender:
             {
                 _id: 'user id',
-                name: 'user name'
+                displayName: 'user name'
             },
             content: 'message content',
-            flag: Number; flag associated for highlighting 0 - no hl, 1 - meeting, 2 - important
+            flag: Number; flag associated for highlighting 0 - no hl, 1 - meeting, 2 - important,
+            _id: msg id
         }
     ]
 */
