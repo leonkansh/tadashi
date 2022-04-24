@@ -530,6 +530,10 @@ router.post('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
     );
     if (auth) {
         try {
+            let assignedId = null;
+            let assignedName = null;
+            if (req.body.assignedId) { assignedId = req.body.assignedId }
+            if (req.body.assignedName) { assignedName = req.body.assignedName }
             await req.db.Assignment.findOneAndUpdate(
                 {
                     orgid: req.params.orgid
@@ -539,8 +543,8 @@ router.post('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
                         'assignments.$[ela].data.$[eld].todos': {
                             content: req.body.content,
                             userid: {
-                                _id: req.body.assignedId,
-                                name: req.body.assignedName
+                                _id: assignedId,
+                                name: assignedName
                             },
                             date: req.body.date,
                             completed: false
