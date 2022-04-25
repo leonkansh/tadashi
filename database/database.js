@@ -80,7 +80,8 @@ async function main() {
             name: String,
             profile: [{
                 name: String,
-                email: String
+                email: String,
+                phone: String
             }],
             goals: [String],
             meetingTimes: [{
