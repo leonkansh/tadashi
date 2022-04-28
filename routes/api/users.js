@@ -5,6 +5,35 @@
 import express from 'express';
 var router = express.Router();
 
+// Self
+router.get('/self', async (req, res) => {
+    if(req.session.isAuthenticated) {
+        try {
+            const self = await req.db.User.findById(req.session.userid)
+                .populate('orgs._id', '_id name')
+                .populate('admin', '_id name');
+            res.json({
+                status: 'success',
+                email: self.email,
+                displayName: self.displayName,
+                admin: self.admin,
+                orgs: self.orgs,
+                _id: self._id
+            });
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+});
+
 /* GET: /{userid}
         Returns a user profile based on a specified user id, containing
         {
