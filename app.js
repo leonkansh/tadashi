@@ -42,8 +42,7 @@ app.use(sessions({
     resave: false
 }));
 
-// Temp account setup, delete and test POSTMAN with MS signin
-// May be advised for simple account tracking for now :(
+/* For testing, fixes user
 app.use((req, res, next) => {
     let username = process.env.logged_username;
     req.session.userid = process.env.logged_uid;
@@ -54,7 +53,9 @@ app.use((req, res, next) => {
     req.session.isAuthenticated = true;
     next();
 });
+*/
 
+/* For SSO Implementation
 // GET: /signin : Microsoft SSO, redirects to '/login'
 app.get('/signin', (req, res) => {
     let username = req.query.id; // Temp call /signin?id={id}
@@ -73,6 +74,7 @@ app.get('/signout', (req, res) => {
    req.session.isAuthenticated = false;
    res.redirect('/');
 });
+*/
 
 app.use("/", indexRouter);
 app.use("/login", loginRouter);
