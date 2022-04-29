@@ -16,6 +16,8 @@ import dotenv from 'dotenv';
 
 import db from './database/database.js';
 import sessions from 'express-session';
+import cookieParser from 'cookie-parser';
+import cookieSession from 'cookie-session';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -23,24 +25,42 @@ const __dirname = dirname(__filename);
 
 var app = express();
 
+app.use(cors({
+    origin: 'http://localhost:3001',
+    credentials: true
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public'), { extensions: ['html'] }));
 app.use((req, res, next) => {
     req.db = db;
     next();
 });
-app.use(cors())
 
+/*
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
+*/
 const oneDay = 1000 * 60 * 60 * 24;
 const secret = Math.random().toString(36).replace(/[^a-z]+/g, '').substring(0, 25);
 app.use(sessions({
+    name: 'tadashi',
     secret: secret,
     saveUninitialized: true,
     cookie: { maxAge: oneDay },
     resave: false
 }));
+/* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
+
+app.get('/s', async (req, res) => {
+    res.cookie('tadashi', req.session.id, {httpOnly:false});
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.send('set');
+});
 
 /* For testing, fixes user
 app.use((req, res, next) => {
