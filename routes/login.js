@@ -1,4 +1,5 @@
 import express from 'express';
+import crypto from 'crypto';
 var router = express.Router();
 
 /*
@@ -7,6 +8,7 @@ var router = express.Router();
         adds userid to session
         redirects to '/'
 */
+/* FOR Microsoft SSO
 router.get('/', async (req, res) => {
     try {
         const options = {
@@ -32,5 +34,152 @@ router.get('/', async (req, res) => {
         });
     }
 });
+*/
+
+/* Signs in user and sets session
+    Payload:
+    {
+        email: email,
+        password: password
+    }
+*/
+router.post('/signin', async(req, res) => {
+    if(req.session.isAuthenticated) {
+        res.json({
+            status: 'error',
+            error: 'already authenticated'
+        });
+    } else {
+        try {
+            const user = await req.db.User.findOne({email: req.body.email})
+                .populate('orgs._id', '_id name')
+                .populate('admin', '_id name')
+                .exec();
+            const status = verifyPassword(req.body.password, user.hash, user.salt);
+            if(status) {
+                req.session.isAuthenticated = true;
+                req.session.account = {
+                    username: user.email,
+                    name: user.displayName
+                }
+                req.session.userid = user._id
+
+                res.json({
+                    status: 'success',
+                    authenticated: req.session.isAuthenticated,
+                    _id: user._id,
+                    email: user.email,
+                    displayName: user.displayName,
+                    admin: user.admin,
+                    orgs: user.orgs
+                });
+            } else {
+                res.json({
+                    status: 'error',
+                    error: 'incorrect password'
+                });
+            }
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    }
+});
+
+/* Signs up user with new account, logs in immediately
+    Payload:
+    {
+        email: emailed used for registration,
+        password: password used for registration,
+        name: name used for display
+    }
+*/
+router.post('/signup', async(req, res) => {
+    if(req.session.isAuthenticated) {
+        res.json({
+            status: 'error',
+            error: 'already logged in'
+        });
+    } else {
+        try {
+            const nameCheck = await req.db.User.find({ email: req.body.email }).exec();
+            if(nameCheck.length != 0) {
+                res.json({
+                    status: 'error',
+                    error: 'name already exists'
+                });
+            } else {
+                const saltHash = hashPassword(req.body.password);
+                const options = {
+                    returnDocument: 'after',
+                    upsert: true
+                }
+            
+                let user = await req.db.User.findOneAndUpdate(
+                    { email: req.body.email },
+                    { $setOnInsert: {
+                        email: req.body.email,
+                        displayName: req.body.name,
+                        salt: saltHash.salt,
+                        hash: saltHash.hash
+                    }},
+                    options
+                );
+
+                req.session.isAuthenticated = true;
+                req.session.account = {
+                    username: user.email,
+                    name: user.displayName
+                }
+                req.session.userid = user._id
+
+                res.json({
+                    status: 'success',
+                    authenticated: req.session.isAuthenticated,
+                    _id: req.session.userid,
+                    email: user.email,
+                    displayName: user.displayName,
+                    admin: [],
+                    orgs: []
+                });
+            }
+        } catch(error) {
+            console.log(error);
+            res.json({
+                status: 'error',
+                error: 'oops'
+            })
+        }
+    }
+});
+
+router.post('/signout', async (req, res) => {
+    req.session.isAuthenticated = false;
+    req.session.account = null;
+    req.session.userid = null;
+    res.json({status: 'success'});
+});
+
+function hashPassword(password) {
+    try {
+        const salt = crypto.randomBytes(128).toString('base64');
+        const iterations = 10000;
+        let obj = { salt: salt };
+        return {
+            hash:  crypto.pbkdf2Sync(password, salt, iterations, 64, 'sha512').toString('base64'),
+            salt: salt
+        }
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+}
+
+function verifyPassword(password, hash, salt) {
+    const temp = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('base64');
+    return temp == hash;
+}
 
 export default router;
