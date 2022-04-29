@@ -12,6 +12,7 @@ import assignmentsRouter from './routes/api/assignments.js';
 import messagesRouter from './routes/api/msg.js';
 import boardsRouter from './routes/api/boards.js';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
 import db from './database/database.js';
 import sessions from 'express-session';
@@ -44,11 +45,11 @@ app.use(sessions({
 // Temp account setup, delete and test POSTMAN with MS signin
 // May be advised for simple account tracking for now :(
 app.use((req, res, next) => {
-    let username = 2;
-    req.session.userid = '621d2726398db9b58f5a831a';
+    let username = process.env.logged_username;
+    req.session.userid = process.env.logged_uid;
     req.session.account = {
-        username: username,
-        name: `Test User: ${username}`
+        username: `${username}@uw.edu`,
+        name: username
     }
     req.session.isAuthenticated = true;
     next();

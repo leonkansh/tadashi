@@ -16,10 +16,11 @@ let router = express.Router();
             sender:
             {
                 _id: 'user id',
-                name: 'user name'
+                displayName: 'user name'
             },
             content: 'message content',
-            flag: Number; flag associated for highlighting 0 - no hl, 1 - meeting, 2 - important
+            flag: Number; flag associated for highlighting 0 - no hl, 1 - meeting, 2 - important,
+            _id: msg id
         }
     ]
 */
@@ -48,7 +49,7 @@ router.get('/:orgid/:teamid', async (req, res) => {
                     upsert: true,
                     returnDocument: 'after'
                 }
-            );
+            ).populate('message.sender', '_id displayName');
             res.send(messageDoc.message);
         } catch(error) {
             console.log(error);
@@ -94,10 +95,7 @@ router.post('/:orgid/:teamid', async (req, res) => {
                         message:
                         {
                             date: req.body.date,
-                            sender: {
-                                _id: req.session.userid,
-                                name: req.session.account.name
-                            },
+                            sender: req.session.userid,
                             content: req.body.content,
                             flag: req.body.flag
                         }

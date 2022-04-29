@@ -31,12 +31,13 @@ var router = express.Router()
     Team Member authentication required
 */
 router.get('/:orgid/:teamid', async (req, res) => {
-    let auth = await verifyTeamMember(
+    let auth = verifyTeamMember(
         req.session.userid,
         req.params.orgid,
         req.params.teamid,
         req.db
     );
+    console.log(req.session.userid, req.params.orgid, req.params.teamid)
     if(auth) {
         try {
             const charters = await req.db.Charter.findOneAndUpdate(
@@ -76,12 +77,52 @@ router.get('/:orgid/:teamid', async (req, res) => {
     }
 });
 
-/* POST: /{orgid}/{teamid}
+/* GET: /{orgid}/{teamid}/single?name="name"
+    return single charter
+*/
+router.get('/:orgid/:teamid/single', async(req, res) => {
+    let auth = verifyTeamMember(
+        req.session.userid,
+        req.params.orgid,
+        req.params.teamid,
+        req.db
+    );
+    if(auth) {
+        try {
+            let charterDoc = await req.db.Charter.findOne({
+                orgid: req.params.orgid,
+                teamid: req.params.teamid
+            }).select({
+                data: {
+                    $elemMatch: {
+                        name: req.query.name
+                    }
+                }
+            });
+            res.json(charterDoc);
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+});
+
+/*  @Deprecated Use PUT
+
+    POST: /{orgid}/{teamid}
     Post new charter for team number in organization
     Payload Body:
     {
         name: 'charter name',
-        content: 'contents of charter',
+        goals: ,
+        profile: ,
         meetingTimes: [Date] or null
     }
     Team Member authentication required
@@ -95,6 +136,9 @@ router.post('/:orgid/:teamid', async (req, res) => {
     );
     if(auth) {
         try {
+            let goals = req.body.goals ? req.body.goals : null;
+            let meetingTimes = req.body.meetingTimes ? req.body.meetingTimes : null;
+            let profile = req.body.profile ? req.body.profile : null;
             await req.db.Charter.findOneAndUpdate(
                 {
                     orgid: req.params.orgid,
@@ -109,8 +153,9 @@ router.post('/:orgid/:teamid', async (req, res) => {
                         data: {
                             completed: true,
                             name: req.body.name,
-                            content: req.body.content,
-                            meetingTimes: req.body.meetingTimes
+                            profile: profile,
+                            goals: goals,
+                            meetingTimes: meetingTimes
                         }
                     }
                 },
@@ -152,17 +197,27 @@ router.put('/:orgid/:teamid', async (req, res) => {
         req.db
     );
     if(auth) {
-        const baseNames = ['Meeting Times', 'Goals', 'Communication'];
+        const baseNames = ['Meeting Times', 'Goals', 'Profile'];
         try {
             const charter = await req.db.Charter.findOne({
                 orgid: req.params.orgid,
                 teamid: req.params.teamid
             });
+            let goals = req.body.goals ? req.body.goals : null;
+            let meetingTimes = req.body.meetingTimes ? req.body.meetingTimes : null;
+            let profile = req.body.profile ? req.body.profile : null;
             for(let i = 0; i < charter.data.length; i++) {
-                if (charter.data[i].name == req.body.name) {
-                    charter.data[i].content = req.body.content;
-                    charter.data[i].meetingTimes = req.body.meetingTimes;
-                    if(baseNames.includes(req.body.name) && !charter.data[i].completed) {
+                if(charter.data[i].name == req.body.name) {
+                    if(goals) {
+                        charter.data[i].goals = goals;
+                    }
+                    if(meetingTimes) {
+                        charter.data[i].meetingTimes = meetingTimes;
+                    }
+                    if(profile) {
+                        charter.data[i].profile = profile;
+                    }
+                    if(!charter.data[i].completed) {
                         charter.data[i].completed = true;
                         charter.baseCount++;
                     }

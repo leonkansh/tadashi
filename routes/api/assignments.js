@@ -57,7 +57,7 @@ router.get('/:orgid', async (req, res) => {
 router.post('/:orgid', async (req, res) => {
     try {
         const org = await req.db.Org.findById(req.params.orgid);
-        if(req.session.userid == org.admin._id) {
+        if(req.session.userid == org.admin) {
             await req.db.Assignment.findOneAndUpdate(
                 {
                     orgid: req.params.orgid
@@ -148,7 +148,7 @@ router.get('/:orgid/:assignmentid', async (req, res) => {
 router.put('/:orgid/:assignmentid', async (req, res) => {
     try {
         const org = await req.db.Org.findById(req.params.orgid);
-        if(org.admin._id == req.session.userid) {
+        if(org.admin == req.session.userid) {
             let changes = {};
             if(req.body.name) {
                 changes['assignments.$[el].name'] = req.body.name;
@@ -304,7 +304,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                                     teamid: req.params.teamid,
                                     leader: {
                                         _id: memberList[counter % memberList.length]._id,
-                                        name: memberList[counter % memberList.length].name
+                                        name: memberList[counter % memberList.length].displayName
                                     },
                                     todos: []
                                 }
@@ -321,7 +321,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                         due: assignment.due,
                         leader: {
                             _id: memberList[counter % memberList.length]._id,
-                            name: memberList[counter % memberList.length].name
+                            name: memberList[counter % memberList.length].displayName
                         },
                         todos: []
                     });
@@ -701,33 +701,6 @@ router.delete('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
             error: 'not authenticated'
         });
     }
-});
-
-/*------ EXTRA COMMANDS ------*/
-/* REPO
-    Repository for reusable assignments
-    NOTE: To be implemented with professor view
-*/
-/* GET: /{userid}/repo
-    Retrieve archive of assignments created by user
-    Return:
-    {
-        todo: complete
-    }
-*/
-router.get('/:orgid/repo', async (req, res) => {
-
-});
-
-/* POST: /{userid}/repo
-    Add new assignment to user archive
-    Payload Body:
-    {
-        todo: complete
-    }
-*/
-router.post('/:orgid/repo', async (req, res) => {
-
 });
 
 export default router;
