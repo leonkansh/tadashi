@@ -66,27 +66,34 @@ router.post('/create', async (req, res) => {
     }
 */
 router.get('/:orgid', async (req, res) => {
-    try {
-        const orgid = req.params.orgid;
-        const org = await req.db.Org.findById(orgid)
-            .populate('admin', '_id displayName')
-            .populate('members', '_id displayName');
-        let accessCode = null;
-        if(org.admin._id == req.session.userid) {
-            accessCode = org.accessCode;
+    if(req.session.isAuthenticated) {
+        try {
+            const orgid = req.params.orgid;
+            const org = await req.db.Org.findById(orgid)
+                .populate('admin', '_id displayName')
+                .populate('members', '_id displayName');
+            let accessCode = null;
+            if(org.admin._id == req.session.userid) {
+                accessCode = org.accessCode;
+            }
+            res.json({
+                name: org.name,
+                admin: org.admin.displayName,
+                description: org.description,
+                members: org.members,
+                teams: org.teams,
+                accessCode: accessCode
+            });
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: '404'
+            });
         }
-        res.json({
-            name: org.name,
-            admin: org.admin.displayName,
-            description: org.description,
-            members: org.members,
-            teams: org.teams,
-            accessCode: accessCode
-        });
-    } catch (error) {
+    } else {
         res.json({
             status: 'error',
-            error: '404'
+            error: 'not authenticated'
         });
     }
 });
@@ -101,28 +108,35 @@ router.get('/:orgid', async (req, res) => {
     Admin authentication required
 */
 router.put('/:orgid', async (req, res) => {
-    try {
-        const sessionUserId = req.session.userid;
-        const orgid = req.params.orgid;
-        await req.db.Org.findOneAndUpdate(
-            { 
-                _id: orgid,
-                admin: sessionUserId
-            },
-            {
-                name: req.body.name,
-                description: req.body.description
-            }
-        ).exec();
-        res.json({
-            status: 'success'
-        });
-    } catch (error) {
+    if (req.session.isAuthenticated) {
+        try {
+            const sessionUserId = req.session.userid;
+            const orgid = req.params.orgid;
+            await req.db.Org.findOneAndUpdate(
+                { 
+                    _id: orgid,
+                    admin: sessionUserId
+                },
+                {
+                    name: req.body.name,
+                    description: req.body.description
+                }
+            ).exec();
+            res.json({
+                status: 'success'
+            });
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: '404'
+            });
+        };
+    } else {
         res.json({
             status: 'error',
-            error: '404'
+            error: 'not authenticated'
         });
-    };
+    }
 });
 
 /* DELETE: /{orgid}
@@ -318,18 +332,25 @@ router.post('/:orgid/leave', async (req, res) => {
     Return a list of members specified organization
 */
 router.get('/:orgid/members', async (req, res) => {
-    try {
-        const orgid = req.params.orgid;
-        let org = await req.db.Org.findById(orgid)
-            .populate('members', '_id displayName')
-            .exec();
-        res.json({
-            members: org.members
-        });
-    } catch (error) {
+    if (req.session.isAuthenticated) {
+        try {
+            const orgid = req.params.orgid;
+            let org = await req.db.Org.findById(orgid)
+                .populate('members', '_id displayName')
+                .exec();
+            res.json({
+                members: org.members
+            });
+        } catch (error) {
+            res.json({
+                status: 'error',
+                error: '404'
+            });
+        }
+    } else {
         res.json({
             status: 'error',
-            error: '404'
+            error: 'not authenticated'
         });
     }
 });
@@ -510,7 +531,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             let team = await req.db.Org.findById(req.params.orgid)
                 .select({
@@ -550,7 +571,7 @@ router.put('/:orgid/team/:teamid', async (req, res) => {
             req.params.teamid,
             req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             let team = await req.db.Org.findById(req.params.orgid)
                 .select({

@@ -31,7 +31,7 @@ router.get('/:orgid/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             const messageDoc = await req.db.Msg.findOneAndUpdate(
                 {
@@ -82,7 +82,7 @@ router.post('/:orgid/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             await req.db.Msg.findOneAndUpdate(
                 {

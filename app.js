@@ -17,7 +17,6 @@ import dotenv from 'dotenv';
 import db from './database/database.js';
 import sessions from 'express-session';
 import cookieParser from 'cookie-parser';
-import cookieSession from 'cookie-session';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -25,8 +24,10 @@ const __dirname = dirname(__filename);
 
 var app = express();
 
+/* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
+
 app.use(cors({
-    origin: ['http://localhost:3001'],
+    origin: ['http://localhost:3001', 'http://localhost:3000'],
     credentials: true
 }));
 app.use(logger('dev'));
@@ -39,11 +40,6 @@ app.use((req, res, next) => {
     next();
 });
 
-/*
-    res.header('Access-Control-Allow-Credentials', true);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,UPDATE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept');
-*/
 const oneDay = 1000 * 60 * 60 * 24;
 const secret = Math.random().toString(36).replace(/[^a-z]+/g, '').substring(0, 25);
 app.use(sessions({
@@ -53,8 +49,8 @@ app.use(sessions({
     cookie: { maxAge: oneDay },
     resave: false
 }));
-/* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
 
+// Unsure if necessary, but kept for stability reasons
 app.get('/s', async (req, res) => {
     res.cookie('tadashi', req.session.id, {httpOnly:false});
     res.header('Access-Control-Allow-Origin', 'http://localhost:3001');

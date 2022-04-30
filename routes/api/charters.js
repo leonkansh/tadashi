@@ -38,7 +38,7 @@ router.get('/:orgid/:teamid', async (req, res) => {
         req.db
     );
     console.log(req.session.userid, req.params.orgid, req.params.teamid)
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             const charters = await req.db.Charter.findOneAndUpdate(
                 {
@@ -87,7 +87,7 @@ router.get('/:orgid/:teamid/single', async(req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             let charterDoc = await req.db.Charter.findOne({
                 orgid: req.params.orgid,
@@ -134,7 +134,7 @@ router.post('/:orgid/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             let goals = req.body.goals ? req.body.goals : null;
             let meetingTimes = req.body.meetingTimes ? req.body.meetingTimes : null;
@@ -196,7 +196,7 @@ router.put('/:orgid/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         const baseNames = ['Meeting Times', 'Goals', 'Profile'];
         try {
             const charter = await req.db.Charter.findOne({
@@ -257,7 +257,7 @@ router.delete('/:orgid/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             await req.db.Charter.findOneAndUpdate(
                 {

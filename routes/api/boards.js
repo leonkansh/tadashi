@@ -25,7 +25,7 @@ router.get('/:orgid/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             const boardDoc = await req.db.Board.findOneAndUpdate(
                 {
@@ -91,7 +91,7 @@ router.post('/:orgid/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             await req.db.Board.findOneAndUpdate(
                 {
@@ -140,7 +140,7 @@ router.post('/:orgid/:teamid/react', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             let boardDoc = await req.db.Board.findOne({
                 orgid: req.params.orgid,

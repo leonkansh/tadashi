@@ -155,6 +155,8 @@ router.post('/signup', async(req, res) => {
     }
 });
 
+/* Removes users credentials
+*/
 router.post('/signout', async (req, res) => {
     req.session.isAuthenticated = false;
     req.session.account = null;

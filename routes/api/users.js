@@ -5,7 +5,7 @@
 import express from 'express';
 var router = express.Router();
 
-// Self
+// Self, non-specifc query for session data
 router.get('/self', async (req, res) => {
     if(req.session.isAuthenticated) {
         try {

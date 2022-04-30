@@ -23,23 +23,30 @@ let router = express.Router()
     ]
 */
 router.get('/:orgid', async (req, res) => {
-    try {
-        const assignmentsDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
-        let assignments = [];
-        assignmentsDoc.assignments.forEach(assign => {
-            assignments.push({
-                _id: assign._id,
-                name: assign.name,
-                description: assign.description,
-                due: assign.due
+    if (req.session.isAuthenticated) {
+        try {
+            const assignmentsDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
+            let assignments = [];
+            assignmentsDoc.assignments.forEach(assign => {
+                assignments.push({
+                    _id: assign._id,
+                    name: assign.name,
+                    description: assign.description,
+                    due: assign.due
+                });
             });
-        });
-        res.send(assignments);
-    } catch(error) {
-        console.log(error);
+            res.send(assignments);
+        } catch(error) {
+            console.log(error);
+            res.json({
+                status: 'error',
+                error: 'oops'
+            });
+        }
+    } else {
         res.json({
             status: 'error',
-            error: 'oops'
+            error: 'not authenticated'
         });
     }
 });
@@ -57,7 +64,7 @@ router.get('/:orgid', async (req, res) => {
 router.post('/:orgid', async (req, res) => {
     try {
         const org = await req.db.Org.findById(req.params.orgid);
-        if(req.session.userid == org.admin) {
+        if(req.session.isAuthenticated && req.session.userid == org.admin) {
             await req.db.Assignment.findOneAndUpdate(
                 {
                     orgid: req.params.orgid
@@ -106,31 +113,38 @@ router.post('/:orgid', async (req, res) => {
     }
 */
 router.get('/:orgid/:assignmentid', async (req, res) => {
-    try {
-        const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
-        let assignment = null;
-        assignmentDoc.assignments.forEach(assign => {
-            if(assign._id == req.params.assignmentid) {
-                assignment = assign
-            }
-        });
-        if(assignment) {
-            res.json({
-                _id: assignment._id,
-                name: assignment.name,
-                description: assignment.description,
-                due: assignment.due
+    if (req.session.isAuthenticated) {
+        try {
+            const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
+            let assignment = null;
+            assignmentDoc.assignments.forEach(assign => {
+                if(assign._id == req.params.assignmentid) {
+                    assignment = assign
+                }
             });
-        } else {
+            if(assignment) {
+                res.json({
+                    _id: assignment._id,
+                    name: assignment.name,
+                    description: assignment.description,
+                    due: assignment.due
+                });
+            } else {
+                res.json({
+                    status: 'error',
+                    error: '404'
+                });
+            }
+        } catch(error) {
             res.json({
                 status: 'error',
-                error: '404'
+                error: 'oops'
             });
         }
-    } catch(error) {
+    } else {
         res.json({
             status: 'error',
-            error: 'oops'
+            error: 'not authenticated'
         });
     }
 });
@@ -148,7 +162,7 @@ router.get('/:orgid/:assignmentid', async (req, res) => {
 router.put('/:orgid/:assignmentid', async (req, res) => {
     try {
         const org = await req.db.Org.findById(req.params.orgid);
-        if(org.admin == req.session.userid) {
+        if(res.session.isAuthenticated && org.admin == req.session.userid) {
             let changes = {};
             if(req.body.name) {
                 changes['assignments.$[el].name'] = req.body.name;
@@ -198,7 +212,7 @@ router.put('/:orgid/:assignmentid', async (req, res) => {
 router.delete('/:orgid/:assignmentid', async (req, res) => {
     try {
         const org = await req.db.Org.findById(req.params.orgid);
-        if(org.admin._id == req.session.userid) {
+        if(req.session.isAuthenticated && org.admin._id == req.session.userid) {
             await req.db.Assignment.findOneAndUpdate(
                 {
                     orgid: req.params.orgid
@@ -272,7 +286,7 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
             const memberList = await retrieveTeamMembers(req.params.orgid, req.params.teamid, req.db);
@@ -382,7 +396,7 @@ router.get('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             const assignmentDoc = await req.db.Assignment.findOne({ orgid: req.params.orgid });
             let assignment = null;
@@ -467,7 +481,7 @@ router.get('/:orgid/team/:teamid/head', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             let assignmentsDoc = await req.db.Assignment.findOne({orgid: req.params.orgid});
             assignmentsDoc.assignments.sort((a, b) => a.due - b.due);
@@ -528,7 +542,7 @@ router.post('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if (auth) {
+    if (req.session.isAuthenticated && auth) {
         try {
             let assignedId = null;
             let assignedName = null;
@@ -598,7 +612,7 @@ router.put('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if(auth) {
+    if(req.session.isAuthenticated && auth) {
         try {
             let changes = {}
             if(req.body.content) {
@@ -667,7 +681,7 @@ router.delete('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
         req.params.teamid,
         req.db
     );
-    if (auth) {
+    if (req.session.isAuthenticated && auth) {
         try {
             await req.db.Assignment.findOneAndUpdate(
                 {
