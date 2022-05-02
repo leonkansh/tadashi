@@ -621,7 +621,7 @@ router.put('/:orgid/:assignmentid/team/:teamid', async (req, res) => {
             if(req.body.date) {
                 changes['assignments.$[ela].data.$[eld].todos.$[elt].date'] = req.body.date;
             }
-            if(req.body.completed) {
+            if(req.body.completed != null) {
                 changes['assignments.$[ela].data.$[eld].todos.$[elt].completed'] = req.body.completed;
             }
             if(req.body.assignedId) {
