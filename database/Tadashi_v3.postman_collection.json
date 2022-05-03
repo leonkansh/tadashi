@@ -1,0 +1,2729 @@
+{
+	"info": {
+		"_postman_id": "a4d8f6d2-9c3f-4203-8b9b-d9023ad46a20",
+		"name": "Tadashi v2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "User ( /api/users )",
+			"item": [
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/:userid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								":userid"
+							],
+							"variable": [
+								{
+									"key": "userid",
+									"value": "6263cde7e08ca18a28afadf6"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Other Person",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/users/:userid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										":userid"
+									],
+									"variable": [
+										{
+											"key": "userid",
+											"value": "6263cd7be08ca18a28afada4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "42"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"2a-1cMqxTVGJzVP1LOleWdkWjN0vmU\""
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "connect.sid=s%3A2cJH1k1tHhmqHKHghlAtIXwHJ9T-2RbL.ssECrczYlrk4w6CGbnZybl67uP31I86RN7UwLaY%2BNzg; Path=/; Expires=Mon, 25 Apr 2022 03:56:10 GMT; HttpOnly"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 24 Apr 2022 03:56:10 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"email\": \"ray@uw.edu\",\n    \"displayName\": \"ray\"\n}"
+						},
+						{
+							"name": "Self",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/users/:userid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"users",
+										":userid"
+									],
+									"variable": [
+										{
+											"key": "userid",
+											"value": "6263cde7e08ca18a28afadf6"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "223"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"df-Z28ppfmHwkqeoTpZiRh1DF6Cx84\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 24 Apr 2022 03:57:54 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"email\": \"john@uw.edu\",\n    \"displayName\": \"john\",\n    \"admin\": [\n        {\n            \"_id\": \"6264cabdb8316fb9abab84d4\",\n            \"name\": \"RSO - Hackathon\"\n        }\n    ],\n    \"orgs\": [\n        {\n            \"_id\": {\n                \"_id\": \"6263d2fb17033b23e05c0401\",\n                \"name\": \"INFO 490 - Capstone\"\n            },\n            \"name\": \"Tadashi\",\n            \"teamid\": 1\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Edit Display Name",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Johnny\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/users/:userid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								":userid"
+							],
+							"variable": [
+								{
+									"key": "userid",
+									"value": "6263cde7e08ca18a28afadf6"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/:userid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								":userid"
+							],
+							"variable": [
+								{
+									"key": "userid",
+									"value": "621c7e864f7599e26f01ebb9"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Self",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/users/self",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"users",
+								"self"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Organization ( /api/org )",
+			"item": [
+				{
+					"name": "Create New Org",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"RSO - Hackathon\",\r\n    \"description\": \"Time to build stuff\",\r\n    \"accessCode\": \"testAccCode\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/org/create",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Org",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Owned (Access Code Present)",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/org/:orgid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"org",
+										":orgid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6264cabdb8316fb9abab84d4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "130"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"82-7udDfslcY1uUNcW5L/M1vG0K3m0\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 24 Apr 2022 04:01:57 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"RSO - Hackathon\",\n    \"admin\": \"Johnny\",\n    \"description\": \"Time to build stuff\",\n    \"members\": [],\n    \"teams\": [],\n    \"accessCode\": \"testAccCode\"\n}"
+						},
+						{
+							"name": "Joined",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/org/:orgid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"org",
+										":orgid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "600"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"258-+4c/5q/snxxIB0x3ywhTvPTIJzc\""
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "connect.sid=s%3AZ9-eg_N_GZB_dUX-c7rpyggJ3d9EMMsx.flnnuwbmGNDfiEP9o4BvZiy7ccOrNt1R6FMj%2BlusJ5U; Path=/; Expires=Mon, 25 Apr 2022 04:10:17 GMT; HttpOnly"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 24 Apr 2022 04:10:17 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"name\": \"INFO 490 - Capstone\",\n    \"admin\": \"admin\",\n    \"description\": \"Good Luck!\",\n    \"members\": [\n        {\n            \"_id\": \"6263cde7e08ca18a28afadf6\",\n            \"displayName\": \"Johnny\"\n        },\n        {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"displayName\": \"ray\"\n        },\n        {\n            \"_id\": \"6263cdb0e08ca18a28afadca\",\n            \"displayName\": \"sarah\"\n        },\n        {\n            \"_id\": \"6263cdcce08ca18a28afade0\",\n            \"displayName\": \"sally\"\n        }\n    ],\n    \"teams\": [\n        {\n            \"_id\": \"6264cda91f3c3a02786eff4c\",\n            \"members\": [],\n            \"teamid\": 2,\n            \"name\": \"Bad Team\"\n        },\n        {\n            \"members\": [\n                \"6263cde7e08ca18a28afadf6\",\n                \"6263cdcce08ca18a28afade0\",\n                \"6263cdb0e08ca18a28afadca\",\n                \"6263cd7be08ca18a28afada4\"\n            ],\n            \"teamid\": 1,\n            \"name\": \"Tadashi\",\n            \"_id\": \"6263d58296cf9de24419e125\"\n        }\n    ],\n    \"accessCode\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Join by Access Code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"accessCode\": \"testAccCode\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid/join",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid",
+								"join"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Edit Org Info",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"RSO - Party Time\",\r\n    \"description\": \"Cut loose\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d3e9980906c5be9b0dbb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Org",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "621c7f55c8ce5202d1554fc3"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Leave Org",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid/leave",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid",
+								"leave"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "621c7fadc8ce5202d1554fcb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Members",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid/members",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid",
+								"members"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "res: Get Members",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/org/:orgid/members",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"org",
+										":orgid",
+										"members"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "240"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"f0-BfYjFFgJJMgVpKOvdotP2nmx53U\""
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 24 Apr 2022 04:14:01 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"members\": [\n        {\n            \"_id\": \"6263cde7e08ca18a28afadf6\",\n            \"displayName\": \"Johnny\"\n        },\n        {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"displayName\": \"ray\"\n        },\n        {\n            \"_id\": \"6263cdb0e08ca18a28afadca\",\n            \"displayName\": \"sarah\"\n        },\n        {\n            \"_id\": \"6263cdcce08ca18a28afade0\",\n            \"displayName\": \"sally\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Kick User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"targetUser\": \"621c7ebd4f7599e26f01ec7a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid/kick",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid",
+								"kick"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "621c7fadc8ce5202d1554fcb"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Randomize Teams",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"teamSize\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid/teams/random",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid",
+								"teams",
+								"random"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Team Members",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid/team/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid",
+								"team",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Team Members",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/org/:orgid/team/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"org",
+										":orgid",
+										"team",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "446"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"1be-nYBUkSetVuHAPE7dxRyAUa6GqVE\""
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "connect.sid=s%3A2Eal3d8MZz50yQ_V6gUsII4crRFmf1V5.WBZNRb3tdmUiN1qouXxJTlJZt0QU6Shoxauo00iEZGE; Path=/; Expires=Sun, 24 Apr 2022 10:42:03 GMT; HttpOnly"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 23 Apr 2022 10:42:03 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"members\": [],\n    \"_id\": \"6263d2fb17033b23e05c0401\",\n    \"teams\": [\n        {\n            \"members\": [\n                {\n                    \"_id\": \"6263cde7e08ca18a28afadf6\",\n                    \"email\": \"john@uw.edu\",\n                    \"displayName\": \"john\"\n                },\n                {\n                    \"_id\": \"6263cdcce08ca18a28afade0\",\n                    \"email\": \"sally@uw.edu\",\n                    \"displayName\": \"sally\"\n                },\n                {\n                    \"_id\": \"6263cdb0e08ca18a28afadca\",\n                    \"email\": \"sarah@uw.edu\",\n                    \"displayName\": \"sarah\"\n                },\n                {\n                    \"_id\": \"6263cd7be08ca18a28afada4\",\n                    \"email\": \"ray@uw.edu\",\n                    \"displayName\": \"ray\"\n                }\n            ],\n            \"teamid\": 1,\n            \"name\": \"Tadashi\",\n            \"_id\": \"6263d58296cf9de24419e125\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Edit Team Name",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"teamName\": \"Tadashi\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/org/:orgid/team/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"org",
+								":orgid",
+								"team",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Assignments",
+			"item": [
+				{
+					"name": "Org Level",
+					"item": [
+						{
+							"name": "Post Assignment",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Product\",\r\n    \"description\": \"Good luck :)\",\r\n    \"due\": \"May 26, 2022, 00:00:00 PDT\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Assignments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get All Assignments",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "6263d2fb17033b23e05c0401"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "873"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"369-kTYjJBDEjsqBsLGUGQ4ea5CNO7g\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 23 Apr 2022 22:23:01 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"_id\": \"62647a558a674a8745fc1773\",\n        \"name\": \"Complete Team Charter\",\n        \"description\": \"Complete your teams charter to begin working together.\",\n        \"due\": \"2022-04-29T07:00:00.000Z\"\n    },\n    {\n        \"_id\": \"62647a868a674a8745fc1777\",\n        \"name\": \"Complete Course Pre-Survey\",\n        \"description\": \"Complete your the survey to let us know your teams.\",\n        \"due\": \"2022-04-15T07:00:00.000Z\"\n    },\n    {\n        \"_id\": \"62647bc48a674a8745fc177c\",\n        \"name\": \"Problem Statement\",\n        \"description\": \"Tell us what you're working on.\",\n        \"due\": \"2022-05-05T07:00:00.000Z\"\n    },\n    {\n        \"_id\": \"62647bd98a674a8745fc1782\",\n        \"name\": \"User Research\",\n        \"description\": \"What do the people want?\",\n        \"due\": \"2022-05-12T07:00:00.000Z\"\n    },\n    {\n        \"_id\": \"62647c038a674a8745fc1789\",\n        \"name\": \"Prototype\",\n        \"description\": \"Your proposed solution to the problem\",\n        \"due\": \"2022-05-19T07:00:00.000Z\"\n    },\n    {\n        \"_id\": \"62647c1c8a674a8745fc1791\",\n        \"name\": \"Product\",\n        \"description\": \"Good luck :)\",\n        \"due\": \"2022-05-26T07:00:00.000Z\"\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Get Single Assignment",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "62647bd98a674a8745fc1782"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Single Assignment",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid",
+												":assignmentid"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "6263d2fb17033b23e05c0401"
+												},
+												{
+													"key": "assignmentid",
+													"value": "62647bd98a674a8745fc1782"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "131"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"83-ZDRRdggt/2sgP1s7ZoL2G3lW6oA\""
+										},
+										{
+											"key": "Date",
+											"value": "Sun, 24 Apr 2022 04:16:06 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"62647bd98a674a8745fc1782\",\n    \"name\": \"User Research\",\n    \"description\": \"What do the people want?\",\n    \"due\": \"2022-05-12T07:00:00.000Z\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Edit Single Assignment",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Product Deployment\",\r\n    \"description\": \"Good job!\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "62647c1c8a674a8745fc1791"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Edit Single Assignment Copy",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "62647cea8a674a8745fc17b1"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Team Level",
+					"item": [
+						{
+							"name": "Get Team Assignments",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/team/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										"team",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Team Assignments",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid/team/:teamid",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid",
+												"team",
+												":teamid"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "6263d2fb17033b23e05c0401"
+												},
+												{
+													"key": "teamid",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1297"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"511-6XOS2WPQANQ1XS15qlKsh5ysdNs\""
+										},
+										{
+											"key": "Set-Cookie",
+											"value": "connect.sid=s%3AE4Bzoy-OMw_5nmbzg3skUw5P1QMQ2Z7e.nfbzhBPfKCsLjmo4DCZAwspD0E8%2FZ56z8vXHrRIMawU; Path=/; Expires=Sun, 24 Apr 2022 22:33:27 GMT; HttpOnly"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 23 Apr 2022 22:33:27 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "[\n    {\n        \"_id\": \"62647a868a674a8745fc1777\",\n        \"name\": \"Complete Course Pre-Survey\",\n        \"description\": \"Complete your the survey to let us know your teams.\",\n        \"due\": \"2022-04-15T07:00:00.000Z\",\n        \"leader\": {\n            \"_id\": \"6263cdcce08ca18a28afade0\",\n            \"name\": \"sally\"\n        },\n        \"todos\": []\n    },\n    {\n        \"_id\": \"62647a558a674a8745fc1773\",\n        \"name\": \"Complete Team Charter\",\n        \"description\": \"Complete your teams charter to begin working together.\",\n        \"due\": \"2022-04-29T07:00:00.000Z\",\n        \"leader\": {\n            \"_id\": \"6263cde7e08ca18a28afadf6\",\n            \"name\": \"john\"\n        },\n        \"todos\": []\n    },\n    {\n        \"_id\": \"62647bc48a674a8745fc177c\",\n        \"name\": \"Problem Statement\",\n        \"description\": \"Tell us what you're working on.\",\n        \"due\": \"2022-05-05T07:00:00.000Z\",\n        \"leader\": {\n            \"_id\": \"6263cdb0e08ca18a28afadca\",\n            \"name\": \"sarah\"\n        },\n        \"todos\": []\n    },\n    {\n        \"_id\": \"62647bd98a674a8745fc1782\",\n        \"name\": \"User Research\",\n        \"description\": \"What do the people want?\",\n        \"due\": \"2022-05-12T07:00:00.000Z\",\n        \"leader\": {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"name\": \"ray\"\n        },\n        \"todos\": []\n    },\n    {\n        \"_id\": \"62647c038a674a8745fc1789\",\n        \"name\": \"Prototype\",\n        \"description\": \"Your proposed solution to the problem\",\n        \"due\": \"2022-05-19T07:00:00.000Z\",\n        \"leader\": {\n            \"_id\": \"6263cde7e08ca18a28afadf6\",\n            \"name\": \"john\"\n        },\n        \"todos\": []\n    },\n    {\n        \"_id\": \"62647c1c8a674a8745fc1791\",\n        \"name\": \"Product Deployment\",\n        \"description\": \"Good job!\",\n        \"due\": \"2022-05-26T07:00:00.000Z\",\n        \"leader\": {\n            \"_id\": \"6263cdcce08ca18a28afade0\",\n            \"name\": \"sally\"\n        },\n        \"todos\": []\n    }\n]"
+								}
+							]
+						},
+						{
+							"name": "Get Team Assignments Head",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/team/:teamid/head",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										"team",
+										":teamid",
+										"head"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Team Assignments Head",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid/team/:teamid/head",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid",
+												"team",
+												":teamid",
+												"head"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "6263d2fb17033b23e05c0401"
+												},
+												{
+													"key": "teamid",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "155"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"9b-W9WmvWK3Mizp2vu2WsHp7wz9HsA\""
+										},
+										{
+											"key": "Set-Cookie",
+											"value": "connect.sid=s%3AqYAqmdql79RW3ysR4bpj9r53M5DpRx5w.tn0Ugr30AzYcc1nGweNVybrallDYMDMHw6x2TWHLbZk; Path=/; Expires=Sun, 24 Apr 2022 22:35:39 GMT; HttpOnly"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 23 Apr 2022 22:35:39 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"hwaName\": \"Complete Team Charter\",\n    \"hwaDescription\": \"Complete your teams charter to begin working together.\",\n    \"hwaDue\": \"2022-04-29T07:00:00.000Z\",\n    \"data\": []\n}"
+								},
+								{
+									"name": "Get Team Assignments Head",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid/team/:teamid/head",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid",
+												"team",
+												":teamid",
+												"head"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "6263d2fb17033b23e05c0401"
+												},
+												{
+													"key": "teamid",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "329"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"149-PI4vvJAzw2zlwQetOcwlMoyZV2U\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 23 Apr 2022 22:44:06 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"hwaName\": \"Complete Team Charter\",\n    \"hwaDescription\": \"Complete your teams charter to begin working together.\",\n    \"hwaDue\": \"2022-04-29T07:00:00.000Z\",\n    \"data\": [\n        {\n            \"userid\": {\n                \"_id\": \"6263cd7be08ca18a28afada4\",\n                \"name\": \"Ray\"\n            },\n            \"content\": \"Our initial meetup\",\n            \"date\": \"2022-04-25T07:00:00.000Z\",\n            \"completed\": false,\n            \"_id\": \"6264812e47b15920a26a2b0e\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Get Single Assignment for Team",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid/team/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid",
+										"team",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "62647bc48a674a8745fc177c"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Single Assignment for Team",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid/team/:teamid",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid",
+												":assignmentid",
+												"team",
+												":teamid"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "6263d2fb17033b23e05c0401"
+												},
+												{
+													"key": "assignmentid",
+													"value": "62647bc48a674a8745fc177c"
+												},
+												{
+													"key": "teamid",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "212"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"d4-lclXy+PB9Hu+PUna61QL3GZieBY\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 23 Apr 2022 22:36:55 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"62647bc48a674a8745fc177c\",\n    \"name\": \"Problem Statement\",\n    \"description\": \"Tell us what you're working on.\",\n    \"due\": \"2022-05-05T07:00:00.000Z\",\n    \"leader\": {\n        \"_id\": \"6263cdb0e08ca18a28afadca\",\n        \"name\": \"sarah\"\n    },\n    \"todos\": []\n}"
+								},
+								{
+									"name": "Get Single Assignment for Team",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid/team/:teamid",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid",
+												":assignmentid",
+												"team",
+												":teamid"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "6263d2fb17033b23e05c0401"
+												},
+												{
+													"key": "assignmentid",
+													"value": "62647bc48a674a8745fc177c"
+												},
+												{
+													"key": "teamid",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "393"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"189-yRJfZArKjnf/6gIvtJIFTzPoF/Q\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 23 Apr 2022 22:40:28 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"_id\": \"62647bc48a674a8745fc177c\",\n    \"name\": \"Problem Statement\",\n    \"description\": \"Tell us what you're working on.\",\n    \"due\": \"2022-05-05T07:00:00.000Z\",\n    \"leader\": {\n        \"_id\": \"6263cdb0e08ca18a28afadca\",\n        \"name\": \"sarah\"\n    },\n    \"todos\": [\n        {\n            \"userid\": {\n                \"_id\": \"6263cd7be08ca18a28afada4\",\n                \"name\": \"Ray\"\n            },\n            \"content\": \"Decide who we are helping\",\n            \"date\": \"2022-05-03T07:00:00.000Z\",\n            \"completed\": false,\n            \"_id\": \"6264801747b15920a26a2ace\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "Post ToDo for Assignment for Team",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"content\": \"Test To-Do 2\",\r\n    \"date\": \"May 1, 2022, 00:00:00 PDT\",\r\n    \"assignedId\": \"62647bc48a674a8745fc177c\",\r\n    \"assignedName\": \"john\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid/team/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid",
+										"team",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "62647a558a674a8745fc1773"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change ToDo for Assignment for Team (partial)",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"todoId\": \"6264801747b15920a26a2ace\",\r\n    \"content\": \"Decide Target Audiecne\",\r\n    \"assignedId\": \"6263cd7be08ca18a28afada4\",\r\n    \"assignedName\": \"Ray\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid/team/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid",
+										"team",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "6263cd7be08ca18a28afada4"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Change ToDo for Assignment for Team (only completed)",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"todoId\": \"6264812e47b15920a26a2b0e\",\r\n    \"completed\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid/team/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid",
+										"team",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "62647a558a674a8745fc1773"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Remove ToDo for Assignment for Team",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"todoId\": \"6264830647b15920a26a2b55\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/:assignmentid/team/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										":assignmentid",
+										"team",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "assignmentid",
+											"value": "62647a558a674a8745fc1773"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Team Assignments Head Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/assignments/:orgid/team/:teamid/head",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"assignments",
+										":orgid",
+										"team",
+										":teamid",
+										"head"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get Team Assignments Head",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:3000/api/assignments/:orgid/team/:teamid/head",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"api",
+												"assignments",
+												":orgid",
+												"team",
+												":teamid",
+												"head"
+											],
+											"variable": [
+												{
+													"key": "orgid",
+													"value": "621d26f81a997588eb8b7979"
+												},
+												{
+													"key": "teamid",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "632"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"278-2kCOo4wP3mNf/W2alXqbiGHkTvE\""
+										},
+										{
+											"key": "Set-Cookie",
+											"value": "connect.sid=s%3AI8jrmPVDP7o9x_rBdCT-_iTDPbjOWsmy.%2F0jEjR2fk3JlNPub8tYNOVG0dGg9lBT0qL0Z9YstH10; Path=/; Expires=Sun, 17 Apr 2022 06:32:59 GMT; HttpOnly"
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 16 Apr 2022 06:32:59 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"hwaName\": \"Test Asssignment 1\",\n    \"hwaDescription\": \"Test description 1\",\n    \"hwaDue\": \"2022-04-22T18:25:43.000Z\",\n    \"data\": [\n        {\n            \"userid\": {\n                \"_id\": \"621d2726398db9b58f5a831a\",\n                \"name\": \"Test User: 2\"\n            },\n            \"content\": \"todo 8\",\n            \"date\": \"2012-04-24T18:25:43.511Z\",\n            \"completed\": false,\n            \"_id\": \"625a62ac7145f302e2bb7f71\"\n        },\n        {\n            \"userid\": {\n                \"_id\": \"621d2726398db9b58f5a831a\",\n                \"name\": \"Test User: 2\"\n            },\n            \"content\": \"todo 9\",\n            \"date\": \"2012-04-25T18:25:43.511Z\",\n            \"completed\": false,\n            \"_id\": \"625a62b77145f302e2bb7f7f\"\n        },\n        {\n            \"userid\": {\n                \"_id\": \"621d2726398db9b58f5a831a\",\n                \"name\": \"Test User: 2\"\n            },\n            \"content\": \"todo 10\",\n            \"date\": \"2012-04-26T18:25:43.511Z\",\n            \"completed\": false,\n            \"_id\": \"625a62be7145f302e2bb7f8e\"\n        }\n    ]\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Messages",
+			"item": [
+				{
+					"name": "Get Team Messages",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/msg/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"msg",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get Team Messages",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/msg/:orgid/:teamid",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"msg",
+										":orgid",
+										":teamid"
+									],
+									"variable": [
+										{
+											"key": "orgid",
+											"value": "6263d2fb17033b23e05c0401"
+										},
+										{
+											"key": "teamid",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": "*"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1248"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"4e0-sG1MWzDgBE7qUQ69TfttVjSzAkM\""
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 23 Apr 2022 23:24:39 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"date\": \"2022-04-23T07:00:00.000Z\",\n        \"sender\": {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"displayName\": \"ray\"\n        },\n        \"content\": \"Hello team!\",\n        \"flag\": 0,\n        \"_id\": \"62648899384de0da5574125c\"\n    },\n    {\n        \"date\": \"2022-04-23T09:00:00.000Z\",\n        \"sender\": {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"displayName\": \"ray\"\n        },\n        \"content\": \"When do we want to have our first meeting?\",\n        \"flag\": 0,\n        \"_id\": \"626488cf889a31d4bdec0ff6\"\n    },\n    {\n        \"date\": \"2022-04-23T10:00:00.000Z\",\n        \"sender\": {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"displayName\": \"ray\"\n        },\n        \"content\": \"Does 5 tomorrow work?\",\n        \"flag\": 0,\n        \"_id\": \"626488db889a31d4bdec0ffc\"\n    },\n    {\n        \"date\": \"2022-04-23T18:00:00.000Z\",\n        \"sender\": {\n            \"_id\": \"6263cdb0e08ca18a28afadca\",\n            \"displayName\": \"sarah\"\n        },\n        \"content\": \"5 works\",\n        \"flag\": 0,\n        \"_id\": \"6264899c08eb1def0c3d98a2\"\n    },\n    {\n        \"date\": \"2022-04-23T19:00:00.000Z\",\n        \"sender\": {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"displayName\": \"ray\"\n        },\n        \"content\": \"!meeting at 5pm, april 24th\",\n        \"flag\": 1,\n        \"_id\": \"62648a1253705fd4d12d3092\"\n    },\n    {\n        \"date\": \"2022-04-24T19:00:00.000Z\",\n        \"sender\": {\n            \"_id\": \"6263cd7be08ca18a28afada4\",\n            \"displayName\": \"ray\"\n        },\n        \"content\": \"don't forget we have a meeting today !important\",\n        \"flag\": 2,\n        \"_id\": \"62648a3453705fd4d12d309b\"\n    },\n    {\n        \"date\": \"2022-04-24T20:00:00.000Z\",\n        \"sender\": {\n            \"_id\": \"6263cde7e08ca18a28afadf6\",\n            \"displayName\": \"john\"\n        },\n        \"content\": \"👍\",\n        \"flag\": 0,\n        \"_id\": \"62648a95cf4b959a27081276\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Send Team Message",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"April 24, 2022, 13:00:00 PDT\",\r\n    \"content\": \"👍\",\r\n    \"flag\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/msg/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"msg",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Relation Board",
+			"item": [
+				{
+					"name": "Get Board Posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/board/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"board",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Board",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"date\": \"April 25, 2022, 00:00:00 PDT\",\r\n        \"title\": \"Great Meeting\",\r\n        \"content\": \"I thought the meeting went great 🙂\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/board/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"board",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "React Board Copy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"emoji\": \"😴\",\r\n        \"postid\": \"62648dedeaa639b9f726f3f3\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/board/:orgid/:teamid/react",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"board",
+								":orgid",
+								":teamid",
+								"react"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Charters",
+			"item": [
+				{
+					"name": "Get Charter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/charters/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"charters",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Charter Single",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/charters/:orgid/:teamid/single?name=Profile",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"charters",
+								":orgid",
+								":teamid",
+								"single"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "Profile"
+								}
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DEPRECATED: Make Charter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test Name 2\",\r\n    \"content\": \"Test content 2\",\r\n    \"meetingTimes\": null\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/charters/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"charters",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "621d26f81a997588eb8b7979"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Charter (Meeting Times)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Meeting Times\",\r\n    \"meetingTimes\": [\r\n        {\r\n            \"name\": \"Weekly Team Meeting\",\r\n            \"weekday\": 1,\r\n            \"start\": 15,\r\n            \"end\": 16\r\n        },\r\n        {\r\n            \"name\": \"Deep Dive\",\r\n            \"weekday\": 5,\r\n            \"start\": 1,\r\n            \"end\": 3\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/charters/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"charters",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Charter (Goals)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Goals\",\r\n    \"goals\": [\r\n        \"Get a 4.0\",\r\n        \"Portfolio worthy product\",\r\n        \"No stress\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/charters/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"charters",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Charter (Profile)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Profile\",\r\n    \"profile\": [\r\n        {\r\n            \"name\": \"Ray\",\r\n            \"email\": \"rayr@gmail.com\",\r\n            \"phone\": \"206-111-1111\"\r\n        },\r\n        {\r\n            \"name\": \"Sarah\",\r\n            \"email\": \"sarahs@outlook.com\",\r\n            \"phone\": \"253-222-2222\"\r\n        },\r\n        {\r\n            \"name\": \"Johnny\",\r\n            \"email\": \"john@uw.edu\",\r\n            \"phone\": \"425-333-3333\"\r\n        },\r\n        {\r\n            \"name\": \"Sally\",\r\n            \"email\": \"sally2000@yahoo.com\",\r\n            \"phone\": \"808-444-4444\"\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/charters/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"charters",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "6263d2fb17033b23e05c0401"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DEPRECATED: Delete Charter (by name)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Test Name 2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/charters/:orgid/:teamid",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"charters",
+								":orgid",
+								":teamid"
+							],
+							"variable": [
+								{
+									"key": "orgid",
+									"value": "621d26f81a997588eb8b7979"
+								},
+								{
+									"key": "teamid",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Signin",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"john@uw.edu\",\r\n    \"password\": \"password\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/login/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"snoop@uw.edu\",\r\n    \"password\": \"password\",\r\n    \"name\": \"dog\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/login/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Signup",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\": \"snoop@uw.edu\",\r\n    \"password\": \"password\",\r\n    \"name\": \"dog\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/login/signup",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"login",
+										"signup"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "X-Powered-By",
+									"value": "Express"
+								},
+								{
+									"key": "Vary",
+									"value": "Origin"
+								},
+								{
+									"key": "Access-Control-Allow-Credentials",
+									"value": "true"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Content-Length",
+									"value": "138"
+								},
+								{
+									"key": "ETag",
+									"value": "W/\"8a-SnpMRjvuNTJEGriys42Y5UixzMo\""
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "tadashi=s%3Ay5tV4tFPh5QeaPEtzWa1tmw1fLKfKBwX.NyqRlHLH6Kk1V%2Fv6v4A8W7bRijTJEcw1yPCMsyMnoko; Path=/; Expires=Sun, 01 May 2022 07:17:11 GMT; HttpOnly"
+								},
+								{
+									"key": "Date",
+									"value": "Sat, 30 Apr 2022 07:17:11 GMT"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=5"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"success\",\n    \"authenticated\": true,\n    \"_id\": \"626ce2773a71133e71408a69\",\n    \"email\": \"snoop@uw.edu\",\n    \"displayName\": \"dog\",\n    \"admin\": [],\n    \"orgs\": []\n}"
+						}
+					]
+				},
+				{
+					"name": "Signout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/login/signout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login",
+								"signout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
