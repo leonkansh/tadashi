@@ -3,6 +3,7 @@
 ### _Information School Capstone 2022: Team Tadashi_
 - [Server Repo and Database Structure](https://github.com/leonkansh/tadashi)
 - [Client Repo and Design Documentation](https://github.com/leonkansh/TeamMotion)
+- [Landing Page](https://speedguy00.github.io/tadashi-landing/)
 
 ### Authors
 - Kevin Yip - Project Manager
@@ -65,7 +66,7 @@ For info about next steps, see [Continuation](#continuation)
 ### Runtime
 
 Tadashi uses the node packet manager to handle the build and inclusion of packages.
-- [node.js](https://nodejs.org/en/)
+- [node.js](https://nodejs.org/en/) Version 14.18.0
 
 To handle API requests, ExpressJS is used to route and send data through the web. API requests are structured in a standard REST format.
 - [ExpressJS](https://expressjs.com/)
