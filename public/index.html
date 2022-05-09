@@ -1,12 +1,661 @@
+<!DOCTYPE html>
 <html>
-
 <head>
-    <title>Tadashi</title>
-    <link rel="stylesheet" href="/stylesheets/style.css">
+<title>Tadashi: Teams in Motion</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
 </head>
-
 <body>
-    <p>Hello World!</p>
-</body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="tadashi--teams-in-motion">Tadashi : Teams in Motion</h1>
+<h3 id="university-of-washington"><strong>University of Washington</strong></h3>
+<h3 id="information-school-capstone-2022-team-tadashi"><em>Information School Capstone 2022: Team Tadashi</em></h3>
+<ul>
+<li><a href="https://github.com/leonkansh/tadashi">Server Repo and Database Structure</a></li>
+<li><a href="https://github.com/leonkansh/TeamMotion">Client Repo and Design Documentation</a></li>
+<li><a href="https://speedguy00.github.io/tadashi-landing/">Landing Page</a></li>
+</ul>
+<h3 id="authors">Authors</h3>
+<ul>
+<li>Kevin Yip - Project Manager
+<ul>
+<li>UW Email: keviny12@uw.edu</li>
+<li>Personal: kevin00.yip@gmail.com</li>
+<li>LinkedIn: https://www.linkedin.com/in/kevintyip</li>
+</ul>
+</li>
+<li>Nicole Fendi - UI/UX Designer
+<ul>
+<li>UW Email: nicolef8@uw.edu</li>
+<li>Personal: nicoleadyafendi@gmail.com</li>
+<li>LinkedIn: https://www.linkedin.com/in/nicolefendi</li>
+</ul>
+</li>
+<li>Leon Kan - Software Engineer
+<ul>
+<li>UW Email: leonykan@uw.edu</li>
+<li>Personal: leon.can@outlook.com</li>
+<li>LinkedIn: https://www.linkedin.com/in/leon-kan/</li>
+</ul>
+</li>
+<li>Collin Santos - Software Engineer
+<ul>
+<li>UW Email: csantos3@uw.edu</li>
+<li>Personal: collinsantos21@gmail.com</li>
+<li>LinkedIn: https://www.linkedin.com/in/collin-santos-2561b8214/</li>
+</ul>
+</li>
+</ul>
+<h3 id="site-links">Site Links</h3>
+<ul>
+<li>Server : <a href="">TBD</a></li>
+<li>Client : <a href="">TBD</a></li>
+</ul>
+<hr>
+<h2 id="about">About</h2>
+<p>Many college students have had a bad team experience.
+According to an online survey we conducted consisting of 30 University of Washington students across various majors, approximately 30% of respondents noted that their biggest pain point was communication, and another 40% of respondents noted that their pain point in groupwork was equity of work among team members.
+From our research, we found that there are currently no solutions that offer structured guidance for team collaboration, especially focused on classes.</p>
+<p>After conducting concept validation with university students, we identified three core concepts behind what makes a great team: communication, accountability, and reflection.
+Teams need to communicate from beginning, middle, and end of their project for effective problem-solving and conflict-resolution.
+Additionally, teams need to explicitly delegate tasks to each member so that everyone knows their responsibility, which establishes a sense of ownership.
+Lastly, teams need to reflect on milestones of a project to give them a way to gain insights and make improvements for future deliverables.</p>
+<p>Tadashi: Teams in Motion is a mobile-first web application that aims to give the basic framework for how in-class teams can work together effectively to complete their projects.
+The three core features of our web-app are: team base, task management, and reflection board.</p>
+<h3 id="acknowledgments">Acknowledgments</h3>
+<p>This project has been guided under Professor Nam-ho, who has provided insightful feedback and monitored the progress throughout the project timeline.</p>
+<h3 id="end-of-life">End of Life</h3>
+<p>We plan to transition our project into open source, effective May 22nd, 2022.
+By the transition date, we will have shut down any systems that automatically collect user data.
+We also will have notified all users that their data will be deleted by this transition date.
+As for cloud infrastructure, we will shut down our infrastructure with MongoDB and all account associated with it.
+The code repository on GitHub will also have been converted from a private repository to a public repository with our contact information so any groups can successfully transition our project.</p>
+<hr>
+<h2 id="app">App</h2>
+<p>This outlines the general structure and runtime for the Tadashi API server.<br>
+For info about deployment, see <a href="#infrastructure">Infrastructure</a>.<br>
+For info about data structure, see <a href="#data">Data</a>.<br>
+For info about building the application, see <a href="#build">Build</a><br>
+For info about next steps, see <a href="#continuation">Continuation</a></p>
+<h3 id="runtime">Runtime</h3>
+<p>Tadashi uses the node packet manager to handle the build and inclusion of packages.</p>
+<ul>
+<li><a href="https://nodejs.org/en/">node.js</a> Version 14.18.0</li>
+</ul>
+<p>To handle API requests, ExpressJS is used to route and send data through the web. API requests are structured in a standard REST format.</p>
+<ul>
+<li><a href="https://expressjs.com/">ExpressJS</a></li>
+</ul>
+<h3 id="file-structure">File Structure</h3>
+<p>Below is the general outline of file structure in the Tadashi repo:</p>
+<pre class="hljs"><code><div>root
+├── database
+│   └── database.js (schema)
+│
+├── routes
+│   ├── (functions).js
+│   └── api
+│       └── (handlers).js
+│
+├── public
+│   └── (api front-end unused)
+│
+├── app.js (entry)
+└── package.json
+</div></code></pre>
+<hr>
+<h2 id="infrastructure">Infrastructure</h2>
+<p>Tadashi is hosted on two separate deployments, the API and the client. The general purpose is to make management of these services independent of one another, without requiring takedown of both services. This can be changed to a single deployment by merging the client and front end repos.</p>
+<p>Our data is stored on a hosted NoSQL database. Any hosted cluster that supports standard MongoDB queries should be interchangable.</p>
+<h3 id="services">Services</h3>
+<p><strong>Deployment</strong>: Netlify</p>
+<ul>
+<li>Link to Server: <a href="">TBD</a></li>
+<li>Link to Client: <a href="">TBD</a></li>
+</ul>
+<p><strong>NoSQL Database</strong>: MongoDB Atlas - Free Tier</p>
+<h3 id="dataflow">Dataflow</h3>
+<p>Dataflow is a straight-forward request and serve structure, where the client requests data via the API routes and is served the related data.
+Most data is reliant on a session token maintained on the server through a cookie.
+For security reasons, information regarding a organization and/or team requires the logged user to have membership within said org/team.</p>
+<p><img src="../diagrams/tadashi-dataflow.jpg?raw=true" alt="Tadashi Data Flow Diagram"></p>
+<hr>
+<h2 id="data">Data</h2>
+<p>The goal of the database structure is to give support for the core functionality of Users, Organizations, and Teams while leaving room for additional services to be added at will. To accomplish this, Users and Organizations are the primary schemas, with reliance only on each other for functionality. Any additional schemas should not impose restrictions on Users or Organizations to allow flexibility and maintainability.</p>
+<p>Additional features that need database support can use the fields present within Orgs and Users to tie them to specific subsets of users, orgs, or teams. For example, the messages schema implements <code>orgid</code> and <code>teamid</code> to uniquely identify a group conversation for a specific team that cannot be accessed unless a user a member.</p>
+<p>Implementation strategy should consult schemas outlined within <code>database/database.js</code> for examples. Additional fields may be added to the Users or Organizations schemas, <em>however</em> be wary of imposing restrictions from other schemas as this can have a cascading effect.</p>
+<h3 id="schema">Schema</h3>
+<p>Below is a diagram of our logical schema structure. Note that this is only logical and not the physical implementation. For example, Teams and ToDo are implemented as nested documents of Organization and Assignments respectively.</p>
+<p>For a detailed list of available fields and connections, consult <code>database/database.js</code>.</p>
+<p><img src="../diagrams/tadashi-data-struct.jpg?raw=true" alt="Tadashi Schmea Structure"></p>
+<h3 id="sample-data">Sample Data</h3>
+<p>Sample data can be imported to a local instance of a NoSQL database using the included .json files within <code>database/tadashiSampleData_v3.zip</code>. Consult the included README for instructions on how to setup using MongoDBCompass.</p>
+<p>Note that this data is fabricated and not representative of real people or the real world. DO NOT deploy Tadashi with this data included as it represents a security risk.</p>
+<h3 id="api">API</h3>
+<p>The API is structured in a REST-like format, with GET, POST, PUT, DELETE entries for most endpoints. Endpoints have been tested, however, further testing is required and should be automated going forward. For additional information on payloads, type returns, and expected functionality, consult comments preceding routes.</p>
+<p>API functionality is not extensive but sufficient for current implented client activities.</p>
+<p>Domain: http://&lt;domain&gt;.com</p>
+<p><strong>Routes</strong></p>
+<p><strong>/login</strong></p>
+<ul>
+<li>POST /signin : Signs in user and sets session</li>
+<li>POST /signup : Signs up new user and sets session</li>
+<li>POST /signout : Removes users credentials from session</li>
+</ul>
+<p><strong>/api/users</strong></p>
+<ul>
+<li>GET /self : Returns current user information for session</li>
+<li>GET /:userid : Returns users information</li>
+<li>PUT /:userid : Edits users information</li>
+<li>DELETE /:userid : Deletes references to user</li>
+</ul>
+<p><strong>/api/org</strong></p>
+<ul>
+<li>POST /create : Create new organization</li>
+<li>GET /:orgid : Return orgs information</li>
+<li>PUT /:orgid : Edits orgs information</li>
+<li>DELETE /:orgid : Deletes references to org</li>
+<li>POST /:orgid/join : Joins user in session to org</li>
+<li>POST /:orgid/leave : Removes user in session from org</li>
+<li>GET /:orgid/members : Returns members of org</li>
+<li>POST /:orgid/kick : Removes target user from org</li>
+<li>POST /:orgid/teams/random : Randomizes teams from current member list
+<ul>
+<li>WARNING : Currently only stable once per org, needs fix</li>
+</ul>
+</li>
+<li>GET /:orgid/team/:teamid : Returns members of team within org</li>
+<li>PUT /:orgid/team/:teamid : Edits team information</li>
+</ul>
+<p><strong>/api/charters</strong> <em>(renamed into summary on client)</em></p>
+<ul>
+<li>GET /:orgid/:teamid : Returns summary information about team</li>
+<li>GET /:orgid/:teamid/single?name=&quot;name&quot; : Returns singlet piece of summary info</li>
+<li>PUT /:orgid/:teamid : Edit summary information about team</li>
+<li>POST,DELETE /:orgid/:teamid : DEPRECATED, irrelevant for new functionality</li>
+</ul>
+<p><strong>/api/assignments</strong></p>
+<ul>
+<li>GET /:orgid : Returns assignments for org</li>
+<li>POST /:orgid : Add assignment to org</li>
+<li>GET /:orgid/:assignmentid : Retrieve single assignment in org</li>
+<li>PUT /:orgid/:assignmentid : Edit single assignment in org</li>
+<li>DELETE /:orgid/:assignmentid : Delete single assignment in org</li>
+<li>GET /:orgid/team/:teamid : Retrieve assignments tied to team in org</li>
+<li>GET /:orgid/:assignmentid/team/:teamid : Retrieve ToDo list for assignment of team</li>
+<li>GET /:orgid/team/:teamid/head : Retrieve next three ToDo's for session user</li>
+<li>POST /:orgid/:assignmentid/team/:teamid : Add ToDo for assignment in a team</li>
+<li>PUT /:orgid/:assignmentid/team/:teamid : Edit ToDo for assignment in a team</li>
+<li>DELETE /:orgid/:assignmentid/team/:teamid : Delete ToDo for assignment in a team</li>
+</ul>
+<p><strong>/api/msg</strong></p>
+<ul>
+<li>GET /:orgid/:teamid : Retreive message history for team</li>
+<li>POST /:orgid/:teamid : Post new message for team</li>
+</ul>
+<p><strong>/api/board</strong></p>
+<ul>
+<li>GET /:orgid/:teamid : Retreive board posts for a team</li>
+<li>POST /:orgid/:teamid : Add new board post for a team</li>
+<li>POST /:orgid/:teamid/react : Add or remove reaction to a post</li>
+</ul>
+<h3 id="postman">Postman</h3>
+<p>Install Postman <a href="https://www.postman.com/">here</a>.</p>
+<p>A catalog of endpoints using the local deployment can be found in file: <code>./database/Tadashi_v3.postman_collection.json</code>. Import the file into Postman environment to load local (localhost:3000) endpoints.</p>
+<p>Endpoints should work locally using Postman and login cookies can be saved by first calling endpoint <code>Login/Signin</code> before restricted endpoints.</p>
+<hr>
+<h2 id="build">Build</h2>
+<p>Steps on how to build and deploy a working version of our application:</p>
+<h3 id="local">Local</h3>
+<ul>
+<li><strong>Database</strong>
+<ul>
+<li>Install MongoDB Server</li>
+<li>(Recommended) Install MongoDBCompass
+<ul>
+<li>Used to view data using GUI</li>
+</ul>
+</li>
+<li>Instance a local MongoDB Server
+<ul>
+<li>(<strong>Windows</strong>) <code>mongod.exe --dbpath=&quot;c:\code\mongodbData\testdb\&quot;</code></li>
+</ul>
+</li>
+<li>(Optional) Populate with sample data manually</li>
+</ul>
+</li>
+<li><strong>Server</strong>
+<ul>
+<li>Clone Server Repository <code>tadashi</code></li>
+<li>Install node packages using <code>npm install</code> from terminal</li>
+<li>In tadashi root direcory, create file <code>.env</code>
+<ul>
+<li>File Content: <code>MONGODB_URI=mongodb://localhost/tadashi</code></li>
+</ul>
+</li>
+<li>Start server with <code>npm start</code> from terminal</li>
+</ul>
+</li>
+<li><strong>Client</strong>
+<ul>
+<li>Clone Server Repository <code>TeamMotion</code></li>
+<li>Install node packages using <code>npm install</code> from terminal</li>
+<li>Change fetch domain location to <code>http://localhost:3000</code></li>
+<li>Start client with <code>npm run start</code> from terminal</li>
+</ul>
+</li>
+</ul>
+<h3 id="deployment">Deployment</h3>
+<ul>
+<li>Setup MongoDB Atlas service</li>
+<li>Replace <code>.env</code> <code>MONGODB_URI</code> string to point your Atlas deployment</li>
+</ul>
+<hr>
+<h2 id="continuation">Continuation</h2>
+<p>Listed below is our suggestion on how this project may be continued forward. This includes items of varying urgency and/or complexity that have come up through ongoing development.</p>
+<p>This section is not meant to be authoritative nor exhaustive. It is meant to guide future teams on what they might seek to investigate going forward.</p>
+<h3 id="next-steps">Next Steps</h3>
+<ul>
+<li>Database Conversion: Nested Objects $\rightarrow$ Mongoose Subdocuments</li>
+<li>Admin Support
+<ul>
+<li>Manual Team Formation Support</li>
+<li>Assignment Repository</li>
+</ul>
+</li>
+<li>Automated Testing</li>
+<li>Full implementation of API on client side</li>
+<li>Standardize error codes and payload returns</li>
+</ul>
+<h3 id="known-issues">Known Issues</h3>
+<ul>
+<li>Team formation only supports once per organization</li>
+<li>Session memory leak (<em>see <code>express-sessions</code> documentation</em>)</li>
+<li>Assignments Schema is static</li>
+<li>Delete functionality is incomplete</li>
+</ul>
+<h3 id="suggestions">Suggestions</h3>
+<ul>
+<li>User Profile Support
+<ul>
+<li>Abouts</li>
+<li>Contacts</li>
+<li>Account Services</li>
+<li>Image support</li>
+<li>Activity scoring</li>
+</ul>
+</li>
+<li>Team Services (<em>e.g. notification frequency</em>)</li>
+<li>Private Messaging</li>
+<li>Notification System</li>
+<li>SSO Implementation (<em>e.g. Microsoft</em>)</li>
+<li>Automatic import assignments from remote API (<em>e.g. Canvas</em>)</li>
+<li>Reddis support for session storage</li>
+<li>Security/Penetration testing
+<ul>
+<li>String validation</li>
+</ul>
+</li>
+<li>Schema support for new features</li>
+</ul>
 
+</body>
 </html>
