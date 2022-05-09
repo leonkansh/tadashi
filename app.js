@@ -27,7 +27,7 @@ var app = express();
 /* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
 
 app.use(cors({
-    origin: ['http://localhost:3001', 'http://localhost:3000'],
+    origin: ['http://localhost:3001', 'http://localhost:3000', 'http://10.0.0.37:3001'],
     credentials: true
 }));
 app.use(logger('dev'));
