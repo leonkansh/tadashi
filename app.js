@@ -62,6 +62,51 @@ app.get('/s', async (req, res) => {
     res.send('set');
 });
 
+app.use(async (req, res, next) => {
+    console.log('**************')
+    console.log('\n SESSION ID: \n')
+    console.log(req.sessionID);
+    console.log('**************')
+    console.log('\n\n');
+
+    console.log('**************')
+    console.log('\n SESSION: \n')
+    console.log(req.session);
+    console.log('**************')
+    console.log('\n\n');
+
+    console.log('**************')
+    console.log('\n HEADERS: \n')
+    console.log(req.headers);
+    console.log('**************')
+    console.log('\n\n');
+
+    console.log('**************')
+    console.log('\n RAW HEADERS: \n')
+    console.log(req.rawHeaders);
+    console.log('**************')
+    console.log('\n\n');
+
+    console.log('**************')
+    console.log('\n URL: \n')
+    console.log(req.url);
+    console.log('**************')
+    console.log('\n\n');
+
+    console.log('**************')
+    console.log('\n BODY: \n')
+    console.log(req.body);
+    console.log('**************')
+    console.log('\n\n');
+
+    console.log('**************')
+    console.log('\n COOKIES: \n')
+    console.log(req.cookies);
+    console.log('**************')
+    console.log('\n\n');
+    next();
+});
+
 /* For testing, fixes user
 app.use((req, res, next) => {
     let username = process.env.logged_username;
