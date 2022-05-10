@@ -27,7 +27,8 @@ var app = express();
 /* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
 
 app.use(cors({
-    origin: '*'
+    origin: 'https://tadashi-app.herokuapp.com',
+    credentials: true
 }));
 app.use(logger('dev'));
 app.use(express.json());
