@@ -24,7 +24,11 @@ const __dirname = dirname(__filename);
 
 var app = express();
 
-/* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
+/**
+ * CRITICAL REFERENCE:
+ * https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server
+ * https://stackoverflow.com/a/63105481
+ */
 app.set('trust proxy', 1);
 app.use(logger('dev'));
 app.use(express.json());
