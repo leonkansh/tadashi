@@ -26,10 +26,6 @@ var app = express();
 
 /* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
 
-app.use(cors({
-    origin: 'https://tadashi-app.herokuapp.com',
-    credentials: true
-}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -55,13 +51,20 @@ app.use(sessions({
     resave: false
 }));
 
+app.use(cors({
+    origin: 'https://tadashi-app.herokuapp.com',
+    credentials: true
+}));
+
 // Unsure if necessary, but kept for stability reasons
+/*
 app.get('/s', async (req, res) => {
     res.cookie('tadashi', req.session.id, {httpOnly:false});
     res.header('Access-Control-Allow-Origin', 'http://localhost:3001');
     res.header('Access-Control-Allow-Credentials', 'true');
     res.send('set');
 });
+*/
 
 app.use((req, res, next) => {
     console.log('**************')
