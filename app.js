@@ -25,7 +25,7 @@ const __dirname = dirname(__filename);
 var app = express();
 
 /* CRITICAL REFERENCE: https://stackoverflow.com/questions/42710057/fetch-cannot-set-cookies-received-from-the-server*/
-
+app.set('trust proxy', 1);
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
