@@ -47,11 +47,11 @@ app.use(sessions({
     secret: secret,
     saveUninitialized: true,
     cookie: {
-        secure: true,
-        httpOnly: true,
+        // secure: true,
+        // httpOnly: true,
         maxAge: oneDay
     },
-    resave: false,
+    resave: false
 }));
 
 // Unsure if necessary, but kept for stability reasons
@@ -62,7 +62,7 @@ app.get('/s', async (req, res) => {
     res.send('set');
 });
 
-app.use(async (req, res, next) => {
+app.use((req, res, next) => {
     console.log('**************')
     console.log('\n SESSION ID: \n')
     console.log(req.sessionID);
