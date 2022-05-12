@@ -56,7 +56,7 @@ app.use(sessions({
 }));
 
 app.use(cors({
-    origin: 'https://tadashi-app.herokuapp.com',
+    origin: ['https://tadashi-app.herokuapp.com', 'https://tadashi-cli.herokuapp.com'],
     credentials: true
 }));
 
