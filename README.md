@@ -24,8 +24,8 @@
   - LinkedIn: https://www.linkedin.com/in/collin-santos-2561b8214/
 
 ### Site Links
-- Server : [TBD]()
-- Client : [TBD]()
+- Server : [Tadashi Client](https://tadashi-cli.herokuapp.com)
+- Client : [Tadashi Server](https://tadashi-srv.herokuapp.com)
 
 ---
 ## About
@@ -100,9 +100,9 @@ Our data is stored on a hosted NoSQL database. Any hosted cluster that supports 
 
 ### Services
 
-**Deployment**: Netlify
-- Link to Server: [TBD]()
-- Link to Client: [TBD]()
+**Deployment**: Heroku
+- Link to Server: [Tadashi Server](https://tadashi-srv.herokuapp.com)
+- Link to Client: [Tadashi Client](https://tadashi-cli.herokuapp.com)
 
 **NoSQL Database**: MongoDB Atlas - Free Tier
 
@@ -143,7 +143,7 @@ The API is structured in a REST-like format, with GET, POST, PUT, DELETE entries
 
 API functionality is not extensive but sufficient for current implented client activities.
 
-Domain: http://\<domain\>.com
+Domain: https://tadashi-srv.herokuapp.com
 
 **Routes**
 
@@ -236,8 +236,25 @@ Steps on how to build and deploy a working version of our application:
 
 ### Deployment
 
+**Server**
 - Setup MongoDB Atlas service
 - Replace `.env` `MONGODB_URI` string to point your Atlas deployment
+- Download the [Heroku CLI](https://devcenter.heroku.com/articles/heroku-cli) and sign up
+- Add a remote to local repository
+  - `heroku git:remote -a tadashi-srv`
+- Merge dev branches to main and create production branch
+- `git push heroku production:main`
+- `git remote -v` to confirm deployment
+
+**Client**
+- Install heroku build utilities:
+  - `heroku plugins:install buildpack-registry`
+  - `heroku plugins:install buildpacks`
+- Check build packs: `heroku buildpacks -a tadashi-cli`
+  - Expecting `react-app`
+  - If not, run: `heroku buildpacks:set mars/create-react-app -a tadashi-cli`
+- Production branch from main
+- Deploy: `git push heroku production:main`
 
 ---
 ## Continuation
