@@ -27,6 +27,9 @@
 - Server : [Tadashi Client](https://tadashi-cli.herokuapp.com)
 - Client : [Tadashi Server](https://tadashi-srv.herokuapp.com)
 
+### Additional Documentation
+- Design Docs : [Tadashi Figma](https://www.figma.com/file/2rNO12j1SSJ1N2pkmWlmhL/CAPSTONE?node-id=1038%3A9021)
+- Research : `./docs/Project_Research.pdf`
 ---
 ## About
 
