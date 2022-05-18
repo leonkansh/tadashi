@@ -24,8 +24,8 @@
   - LinkedIn: https://www.linkedin.com/in/collin-santos-2561b8214/
 
 ### Site Links
-- Server : [Tadashi Client](https://tadashi-cli.herokuapp.com)
-- Client : [Tadashi Server](https://tadashi-srv.herokuapp.com)
+- Client : [Tadashi Client](https://tadashi-app.herokuapp.com)
+- Server : [Tadashi Server](https://tadashi-srv.herokuapp.com)
 
 ### Additional Documentation
 - Design Docs : [Tadashi Figma](https://www.figma.com/file/2rNO12j1SSJ1N2pkmWlmhL/CAPSTONE?node-id=1038%3A9021)
@@ -105,7 +105,7 @@ Our data is stored on a hosted NoSQL database. Any hosted cluster that supports 
 
 **Deployment**: Heroku
 - Link to Server: [Tadashi Server](https://tadashi-srv.herokuapp.com)
-- Link to Client: [Tadashi Client](https://tadashi-cli.herokuapp.com)
+- Link to Client: [Tadashi Client](https://tadashi-app.herokuapp.com)
 
 **NoSQL Database**: MongoDB Atlas - Free Tier
 
