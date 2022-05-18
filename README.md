@@ -220,10 +220,12 @@ Steps on how to build and deploy a working version of our application:
 
 - **Database**
   - Install MongoDB Server
+      - (**Mac**): [Install MongoDB Community Edition](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-os-x/)
   - (Recommended) Install MongoDBCompass
     - Used to view data using GUI
   - Instance a local MongoDB Server
     - (**Windows**) `mongod.exe --dbpath="c:\code\mongodbData\testdb\"`
+    - (**Mac**) `brew services start mongodb-community@5.0`
   - (Optional) Populate with sample data manually
 - **Server**
   - Clone Server Repository `tadashi`
