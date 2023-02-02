@@ -47,10 +47,12 @@ app.use(sessions({
     secret: secret,
     saveUninitialized: true,
     cookie: {
-        secure: true,
+        // uncomment this after deploying
+        //secure: true,
         httpOnly: false,
-        maxAge: oneDay,
-        sameSite: 'none'
+        maxAge: oneDay
+        // this one too
+        //sameSite: 'none'
     },
     resave: false
 }));
@@ -72,29 +74,29 @@ app.get('/s', async (req, res) => {
 */
 
 app.use((req, res, next) => {
-    console.log('**************')
-    console.log('\n SESSION ID: \n')
-    console.log(req.sessionID);
-    console.log('**************')
-    console.log('\n\n');
+    // console.log('**************')
+    // console.log('\n SESSION ID: \n')
+    // console.log(req.sessionID);
+    // console.log('**************')
+    // console.log('\n\n');
 
-    console.log('**************')
-    console.log('\n SESSION: \n')
-    console.log(req.session);
-    console.log('**************')
-    console.log('\n\n');
+    // console.log('**************')
+    // console.log('\n SESSION: \n')
+    // console.log(req.session);
+    // console.log('**************')
+    // console.log('\n\n');
 
-    console.log('**************')
-    console.log('\n HEADERS: \n')
-    console.log(req.headers);
-    console.log('**************')
-    console.log('\n\n');
+    // console.log('**************')
+    // console.log('\n HEADERS: \n')
+    // console.log(req.headers);
+    // console.log('**************')
+    // console.log('\n\n');
 
-    console.log('**************')
-    console.log('\n RAW HEADERS: \n')
-    console.log(req.rawHeaders);
-    console.log('**************')
-    console.log('\n\n');
+    // console.log('**************')
+    // console.log('\n RAW HEADERS: \n')
+    // console.log(req.rawHeaders);
+    // console.log('**************')
+    // console.log('\n\n');
 
     console.log('**************')
     console.log('\n URL: \n')
@@ -108,26 +110,26 @@ app.use((req, res, next) => {
     console.log('**************')
     console.log('\n\n');
 
-    console.log('**************')
-    console.log('\n COOKIES: \n')
-    console.log(req.cookies);
-    console.log('**************')
-    console.log('\n\n');
+    // console.log('**************')
+    // console.log('\n COOKIES: \n')
+    // console.log(req.cookies);
+    // console.log('**************')
+    // console.log('\n\n');
     next();
 });
 
-/* For testing, fixes user
-app.use((req, res, next) => {
-    let username = process.env.logged_username;
-    req.session.userid = process.env.logged_uid;
-    req.session.account = {
-        username: `${username}@uw.edu`,
-        name: username
-    }
-    req.session.isAuthenticated = true;
-    next();
-});
-*/
+// For testing, fixes user
+// app.use((req, res, next) => {
+//     let username = process.env.logged_username;
+//     req.session.userid = process.env.logged_uid;
+//     req.session.account = {
+//         username: `${username}@uw.edu`,
+//         name: username
+//     }
+//     req.session.isAuthenticated = true;
+//     next();
+// });
+
 
 /* For SSO Implementation
 // GET: /signin : Microsoft SSO, redirects to '/login'

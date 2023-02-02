@@ -45,6 +45,7 @@ router.get('/', async (req, res) => {
 */
 router.post('/signin', async(req, res) => {
     if(req.session.isAuthenticated) {
+        //console.log(req.session)
         res.json({
             status: 'error',
             error: 'already authenticated'
@@ -62,8 +63,8 @@ router.post('/signin', async(req, res) => {
                     username: user.email,
                     name: user.displayName
                 }
-                req.session.userid = user._id
-
+                req.session.userid = user._id;
+                console.log(req.session)
                 res.json({
                     status: 'success',
                     authenticated: req.session.isAuthenticated,
@@ -73,16 +74,19 @@ router.post('/signin', async(req, res) => {
                     admin: user.admin,
                     orgs: user.orgs
                 });
+                
             } else {
                 res.json({
                     status: 'error',
                     error: 'incorrect password'
                 });
             }
+            
         } catch (error) {
+            console.log(error)
             res.json({
                 status: 'error',
-                error: 'oops'
+                error: 'incorrect email'
             });
         }
     }
