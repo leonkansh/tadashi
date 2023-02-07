@@ -10,11 +10,6 @@ router.get('/self', async (req, res) => {
     console.log(req.session);
     if(req.session.isAuthenticated) {
         try {
-            //63d6264c293af18d44013bb8 <- nosajn123@gmail.com's userid
-            console.log(req.body)
-            // req.session.userid does not contain any information
-            // if req.db.User.findById field is replaced with user _id
-            // field from database, it works.
             const self = await req.db.User.findById(req.session.userid)
                 .populate('orgs._id', '_id name')
                 .populate('admin', '_id name');
@@ -22,7 +17,8 @@ router.get('/self', async (req, res) => {
                 status: 'success',
                 email: self.email,
                 displayName: self.displayName,
-                admin: self.admin,
+                userType: self.userType,
+                admin: self.admin, 
                 orgs: self.orgs,
                 _id: self._id
             });
@@ -79,6 +75,7 @@ router.get('/:userid', async (req, res) => {
             res.json({
                 email: user.email,
                 displayName: user.displayName,
+                userType: user.userType,
                 admin: user.admin,
                 orgs: user.orgs
             });

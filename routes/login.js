@@ -45,7 +45,6 @@ router.get('/', async (req, res) => {
 */
 router.post('/signin', async(req, res) => {
     if(req.session.isAuthenticated) {
-        //console.log(req.session)
         res.json({
             status: 'error',
             error: 'already authenticated'
@@ -64,13 +63,14 @@ router.post('/signin', async(req, res) => {
                     name: user.displayName
                 }
                 req.session.userid = user._id;
-                console.log(req.session)
+                console.log(user.userType)
                 res.json({
                     status: 'success',
                     authenticated: req.session.isAuthenticated,
                     _id: user._id,
                     email: user.email,
                     displayName: user.displayName,
+                    userType: user.userType,
                     admin: user.admin,
                     orgs: user.orgs
                 });
@@ -97,7 +97,8 @@ router.post('/signin', async(req, res) => {
     {
         email: emailed used for registration,
         password: password used for registration,
-        name: name used for display
+        name: name used for display,
+        userType: admin user or normal user
     }
 */
 router.post('/signup', async(req, res) => {
@@ -120,18 +121,17 @@ router.post('/signup', async(req, res) => {
                     returnDocument: 'after',
                     upsert: true
                 }
-            
                 let user = await req.db.User.findOneAndUpdate(
                     { email: req.body.email },
                     { $setOnInsert: {
                         email: req.body.email,
                         displayName: req.body.name,
+                        userType: req.body.usertype,
                         salt: saltHash.salt,
                         hash: saltHash.hash
                     }},
                     options
                 );
-
                 req.session.isAuthenticated = true;
                 req.session.account = {
                     username: user.email,
@@ -145,6 +145,7 @@ router.post('/signup', async(req, res) => {
                     _id: req.session.userid,
                     email: user.email,
                     displayName: user.displayName,
+                    userType: user.usertype,
                     admin: [],
                     orgs: []
                 });

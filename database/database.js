@@ -12,6 +12,7 @@ async function main() {
     const userSchema = new mongoose.Schema({
         email: String,
         displayName: String,
+        userType: String,
         hash: String,
         salt: String,
         admin: [{type: mongoose.Schema.Types.ObjectId, ref: "Org"}],
