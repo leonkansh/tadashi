@@ -11,6 +11,7 @@ import chartersRouter from './routes/api/charters.js';
 import assignmentsRouter from './routes/api/assignments.js';
 import messagesRouter from './routes/api/msg.js';
 import boardsRouter from './routes/api/boards.js';
+import userProfileRouter from './routes/api/userprofile.js'
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -160,5 +161,6 @@ app.use("/api/charters", chartersRouter);
 app.use("/api/assignments", assignmentsRouter);
 app.use("/api/msg", messagesRouter);
 app.use("/api/board", boardsRouter);
+app.use("/api/userprofile", userProfileRouter);
 
 export default app;

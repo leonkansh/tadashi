@@ -23,6 +23,13 @@ async function main() {
         }]
     });
 
+    const userProfileSchema = new mongoose.Schema({
+        userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        questions: [String],
+        answers: [String]
+    });
+
     const orgSchema = new mongoose.Schema({
         name: String,
         admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -115,6 +122,7 @@ async function main() {
     db.Assignment = mongoose.model('Assignment', assignmentSchema);
     db.Charter = mongoose.model('Charter', charterSchema);
     db.Board = mongoose.model('Board', postBoardSchema);
+    db.UserProfile = mongoose.model('UserProfile', userProfileSchema);
 }
 
 export default db;
