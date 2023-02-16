@@ -11,14 +11,22 @@ router.get('/:orgid/:userid', async (req, res) => {
             const orgid = req.params.orgid;
             const userid = req.params.userid;
             const userprofile = await req.db.UserProfile.findOne({userid: userid, orgid: orgid});
-            res.json({
-                status: 'success',
-                _id: userprofile._id,
-                orgid: userprofile.orgid,
-                userid: userprofile.userid,
-                questions: userprofile.questions,
-                answers: userprofile.answers
-            });
+            if (userprofile != null) {
+                res.json({
+                    status: 'success',
+                    _id: userprofile._id,
+                    orgid: userprofile.orgid,
+                    userid: userprofile.userid,
+                    questions: userprofile.questions,
+                    answers: userprofile.answers
+                });
+            } else {
+                res.json({
+                    status: 'error',
+                    error: 'profile not created'
+                });
+            }
+            
         } catch (error) {
             res.json({
                 status: 'error',
