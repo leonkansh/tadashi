@@ -40,7 +40,8 @@ router.post('/create', async (req, res) => {
                     }
                 }).exec();
             res.json({
-                status: "success"
+                status: "success",
+                orgid: org._id
             });
         }
     } catch (error) {
