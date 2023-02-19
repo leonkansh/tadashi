@@ -68,16 +68,19 @@ router.post('/create', async (req, res) => {
 */
 router.get('/:orgid', async (req, res) => {
     if(req.session.isAuthenticated) {
+        console.log('i am authenticated')
         try {
             const orgid = req.params.orgid;
             const org = await req.db.Org.findById(orgid)
                 .populate('admin', '_id displayName')
                 .populate('members', '_id displayName');
             let accessCode = null;
+            console.log(org)
             if(org.admin._id == req.session.userid) {
                 accessCode = org.accessCode;
             }
             res.json({
+                status: 'success',
                 name: org.name,
                 admin: org.admin.displayName,
                 description: org.description,
