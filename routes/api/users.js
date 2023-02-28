@@ -60,6 +60,11 @@ router.get('/self', async (req, res) => {
                 name: name of joined organization (outdated)
                 teamid: id of team within organization
             ]
+            standing : class standing,
+            major : major,
+            MBTI : MBTI,
+            phone : phone number,
+            workstyle : workstyle
         }
         Note: If user is not assigned a team, teamid will be non-existent
 */
@@ -77,7 +82,12 @@ router.get('/:userid', async (req, res) => {
                 displayName: user.displayName,
                 userType: user.userType,
                 admin: user.admin,
-                orgs: user.orgs
+                orgs: user.orgs,
+                standing : req.body.standing,
+                major : req.body.major,
+                MBTI : req.body.MBTI,
+                phone : req.body.phone,
+                workstyle : req.body.workstyle    
             });
         } else { 
             res.json({
@@ -166,5 +176,65 @@ router.delete('/:userid', async(req, res) => {
         })
     }
 });
+
+
+/* GET: /{userid}
+    body: standing, major, MBTI, phone, workstyle
+    Return user information:
+    {
+        displayName : name,
+        standing : class standing,
+        major : major,
+        MBTI : MBTI,
+        phone : phone number,
+        workstyle : workstyle
+    }
+*/
+
+router.put('/information/:userid', async(req, res) => {
+    try{
+        const id = req.params.userid;
+        const user = await req.db.User.findById(id);
+        let standing = req.body.standing ? req.body.standing : null;
+        let major = req.body.major ? req.body.major : null;
+        let MBTI = req.body.MBTI ? req.body.MBTI : null;
+        let phone = req.body.phone ? req.body.phone : null;
+        let workstyle = req.body.workstyle ? req.body.workstyle : null;
+        if(standing){
+            console.log("here2");
+            user.standing = standing;
+            console.log(user.standing);
+        }
+        if(major){
+            user.major = major;
+        }
+        if(MBTI){
+            user.MBTI = MBTI;
+        }
+        if(phone){
+            user.phone = phone;
+        }
+        if(workstyle){
+            user.workstyle = workstyle;
+        }
+        user.save();
+        res.json({
+            status: 'success',
+            displayName: req.body.name,
+            standing : req.body.standing,
+            major : req.body.major,
+            MBTI : req.body.MBTI,
+            phone : req.body.phone,
+            workstyle : req.body.workstyle
+        });
+    } catch (error) {
+        res.json({
+            status: 'error',
+            error: '404'
+        });
+    }
+})
+
+
     
 export default router;

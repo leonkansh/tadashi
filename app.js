@@ -12,6 +12,7 @@ import assignmentsRouter from './routes/api/assignments.js';
 import messagesRouter from './routes/api/msg.js';
 import boardsRouter from './routes/api/boards.js';
 import userProfileRouter from './routes/api/userprofile.js'
+import teamAgreementRouter from './routes/api/teamAgreement.js'
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -162,5 +163,6 @@ app.use("/api/assignments", assignmentsRouter);
 app.use("/api/msg", messagesRouter);
 app.use("/api/board", boardsRouter);
 app.use("/api/userprofile", userProfileRouter);
+app.use("/api/teamAgreement", teamAgreementRouter)
 
 export default app;

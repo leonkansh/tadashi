@@ -18,16 +18,20 @@ async function main() {
         admin: [{type: mongoose.Schema.Types.ObjectId, ref: "Org"}],
         orgs: [{
             _id: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
-            teamid: Number,
             name: String
-        }]
+        }],
+        standing: String,
+        major: String,
+        MBTI: String,
+        phone: String,
+        workstyle: String
     });
 
     const userProfileSchema = new mongoose.Schema({
         userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
         questions: [String],
-        answers: [String]
+        answers: [String],
     });
 
     const orgSchema = new mongoose.Schema({
@@ -36,11 +40,7 @@ async function main() {
         description: String, // can be empty
         accessCode: String,
         members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-        teams: [{ // initialize null
-            members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-            teamid: Number,
-            name: String
-        }]
+        viewed: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] //initialized to null
     });
 
     const msgSchema = new mongoose.Schema({
@@ -101,6 +101,22 @@ async function main() {
         }]
     });
 
+    const teamAgreementSchema = new mongoose.Schema({
+        orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        meetingTimes: [{
+            name: String,
+            weekday: Number,
+            start: Number,
+            end: Number
+        }],
+        workload: [String],
+        pulse: {
+            weekday: Number,
+            start: Number,
+            end: Number
+        }
+    })
+
     const postBoardSchema = new mongoose.Schema({
         orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
         teamid: Number,
@@ -123,6 +139,7 @@ async function main() {
     db.Charter = mongoose.model('Charter', charterSchema);
     db.Board = mongoose.model('Board', postBoardSchema);
     db.UserProfile = mongoose.model('UserProfile', userProfileSchema);
+    db.TeamAgreement = mongoose.model('Team', teamAgreementSchema);
 }
 
 export default db;

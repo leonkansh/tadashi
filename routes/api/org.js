@@ -435,76 +435,76 @@ router.post('/:orgid/kick', async (req, res) => {
     }
     Admin authentication required
 */
-router.post('/:orgid/teams/random', async (req, res) => {
-    if (req.session.isAuthenticated) {
-        try {
-            const userid = req.session.userid;
-            const orgid = req.params.orgid;
-            let org = await req.db.Org.findById(orgid);
-            if (org.admin._id == userid) {
-                const teamSize = req.body.teamSize;
-                const members = org.members;
-                let teams = []; 
-                let remainingStudents = members.length;
-                while (remainingStudents > 0) {
-                    let newTeam = [];
-                    for(let i = 0; i < teamSize; i++) {
-                        if (remainingStudents > 0) {
-                            newTeam.push(members[remainingStudents - 1]);
-                            remainingStudents--;
-                        }
-                    }
-                    console.log(remainingStudents)
-                    console.log(newTeam)
-                    if (newTeam.length != 0) {
-                        teams.push(newTeam);
-                    }
-                }
-                for (let i = 0; i < teams.length; i++) {
-                    let tempTeam = {
-                        members: teams[i],
-                        teamid: i + 1,
-                        name: `Team ${i + 1}`
-                    }
-                    org.teams.push(tempTeam)
-                    teams[i].forEach(mem => {
-                        req.db.User.findByIdAndUpdate(
-                            mem,
-                            {
-                                '$set': {
-                                    'orgs.$[el].teamid': i + 1,
-                                    'orgs.$[el].name': `Team ${i + 1}`
-                                }
-                            },
-                            {
-                                arrayFilters: [{ 'el._id': orgid }]
-                            }
-                        ).exec();
-                    });
-                }
-                await org.save();
-                res.json({
-                    status: 'success'
-                });
-            } else {
-                res.json({
-                    status: 'error',
-                    error: 'improper credentials'
-                });
-            }
-        } catch (error) {
-            res.json({
-                status: 'error',
-                error: '404'
-            });
-        }
-    } else {
-        res.json({
-            status: 'error',
-            error: 'not authenticated'
-        });
-    }
-});
+// router.post('/:orgid/teams/random', async (req, res) => {
+//     if (req.session.isAuthenticated) {
+//         try {
+//             const userid = req.session.userid;
+//             const orgid = req.params.orgid;
+//             let org = await req.db.Org.findById(orgid);
+//             if (org.admin._id == userid) {
+//                 const teamSize = req.body.teamSize;
+//                 const members = org.members;
+//                 let teams = []; 
+//                 let remainingStudents = members.length;
+//                 while (remainingStudents > 0) {
+//                     let newTeam = [];
+//                     for(let i = 0; i < teamSize; i++) {
+//                         if (remainingStudents > 0) {
+//                             newTeam.push(members[remainingStudents - 1]);
+//                             remainingStudents--;
+//                         }
+//                     }
+//                     console.log(remainingStudents)
+//                     console.log(newTeam)
+//                     if (newTeam.length != 0) {
+//                         teams.push(newTeam);
+//                     }
+//                 }
+//                 for (let i = 0; i < teams.length; i++) {
+//                     let tempTeam = {
+//                         members: teams[i],
+//                         teamid: i + 1,
+//                         name: `Team ${i + 1}`
+//                     }
+//                     org.teams.push(tempTeam)
+//                     teams[i].forEach(mem => {
+//                         req.db.User.findByIdAndUpdate(
+//                             mem,
+//                             {
+//                                 '$set': {
+//                                     'orgs.$[el].teamid': i + 1,
+//                                     'orgs.$[el].name': `Team ${i + 1}`
+//                                 }
+//                             },
+//                             {
+//                                 arrayFilters: [{ 'el._id': orgid }]
+//                             }
+//                         ).exec();
+//                     });
+//                 }
+//                 await org.save();
+//                 res.json({
+//                     status: 'success'
+//                 });
+//             } else {
+//                 res.json({
+//                     status: 'error',
+//                     error: 'improper credentials'
+//                 });
+//             }
+//         } catch (error) {
+//             res.json({
+//                 status: 'error',
+//                 error: '404'
+//             });
+//         }
+//     } else {
+//         res.json({
+//             status: 'error',
+//             error: 'not authenticated'
+//         });
+//     }
+// });
 
 /* GET: /{orgid}/team/{teamid}
     Returns members of the associated team within an organization
@@ -529,13 +529,13 @@ router.post('/:orgid/teams/random', async (req, res) => {
     }
 */
 router.get('/:orgid/team/:teamid', async (req, res) => {
-    let auth = await verifyTeamMember(
-        req.session.userid,
-        req.params.orgid,
-        req.params.teamid,
-        req.db
-    );
-    if(req.session.isAuthenticated && auth) {
+    // let auth = await verifyTeamMember(
+    //     req.session.userid,
+    //     req.params.orgid,
+    //     req.params.teamid,
+    //     req.db
+    // );
+    // if(req.session.isAuthenticated && auth) {
         try {
             let team = await req.db.Org.findById(req.params.orgid)
                 .select({
@@ -553,12 +553,12 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                 error: 'oops'
             });
         }
-    } else {
-        res.json({
-            status: 'error',
-            error: 'not authenticated'
-        });
-    }
+    // } else {
+    //     res.json({
+    //         status: 'error',
+    //         error: 'not authenticated'
+    //     });
+    // }
 });
 
 /* PUT: /{orgid}/team/{teamid}
@@ -616,5 +616,11 @@ router.put('/:orgid/team/:teamid', async (req, res) => {
         });
     }
 });
+
+
+
+//viewed
+
+//viewed/
 
 export default router;

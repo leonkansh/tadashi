@@ -128,7 +128,7 @@ router.post('/signup', async(req, res) => {
                         displayName: req.body.name,
                         userType: req.body.usertype,
                         salt: saltHash.salt,
-                        hash: saltHash.hash
+                        hash: saltHash.hash,
                     }},
                     options
                 );
