@@ -76,8 +76,9 @@ router.get('/:userid', async (req, res) => {
             .populate('orgs._id', '_id name')
             .populate('admin', '_id name')
             .exec();
-        if (sessionUserId == userid) {
+        if (req.session.isAuthenticated) {
             res.json({
+                _id: user._id,
                 email: user.email,
                 displayName: user.displayName,
                 userType: user.userType,
