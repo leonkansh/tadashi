@@ -20,7 +20,12 @@ router.get('/self', async (req, res) => {
                 userType: self.userType,
                 admin: self.admin, 
                 orgs: self.orgs,
-                _id: self._id
+                _id: self._id,
+                standing : self.standing,
+                major : self.major,
+                MBTI : self.MBTI,
+                phone : self.phone,
+                workstyle : self.workstyle
             });
         } catch (error) {
             // error is null for some reason
@@ -84,11 +89,11 @@ router.get('/:userid', async (req, res) => {
                 userType: user.userType,
                 admin: user.admin,
                 orgs: user.orgs,
-                standing : req.body.standing,
-                major : req.body.major,
-                MBTI : req.body.MBTI,
-                phone : req.body.phone,
-                workstyle : req.body.workstyle    
+                standing : user.standing,
+                major : user.major,
+                MBTI : user.MBTI,
+                phone : user.phone,
+                workstyle : user.workstyle    
             });
         } else { 
             res.json({
@@ -221,12 +226,12 @@ router.put('/information/:userid', async(req, res) => {
         user.save();
         res.json({
             status: 'success',
-            displayName: req.body.name,
-            standing : req.body.standing,
-            major : req.body.major,
-            MBTI : req.body.MBTI,
-            phone : req.body.phone,
-            workstyle : req.body.workstyle
+            // displayName: req.body.name,
+            // standing : req.body.standing,
+            // major : req.body.major,
+            // MBTI : req.body.MBTI,
+            // phone : req.body.phone,
+            // workstyle : req.body.workstyle
         });
     } catch (error) {
         res.json({
