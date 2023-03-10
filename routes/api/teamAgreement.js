@@ -55,12 +55,17 @@ router.post('/create', async (req, res) => {
     // if(req.session.isAuthenticated) {
         try {
             console.log('here');
-            await req.db.teamAgreement.create({
-                
+            console.log(req.body.orgid);
+            let teamAgreement = await req.db.TeamAgreement.create({
+                orgid : req.body.orgid,
+                meetingTimes: req.body.meetingTimes,
+                workload: req.body.workload,
+                pulse: req.body.pulse
             });
             res.json({
                 status: 'success',
-                orgid: req.body.orgid,
+                orgid: teamAgreement.orgid,
+                teamAgreementid: teamAgreement._id
             });
         } catch (error) {
             res.json({
