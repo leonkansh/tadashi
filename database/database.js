@@ -102,18 +102,20 @@ async function main() {
     });
 
     const teamAgreementSchema = new mongoose.Schema({
-        orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        org: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        teamGoals: [String],
         meetingTimes: [{
-            name: String,
-            weekday: Number,
-            start: Number,
-            end: Number
+            weekday: String,
+            startHour: String,
+            startMinute: String,
+            endHour: String,
+            endMinute: String
         }],
-        workload: [String],
+        communicationChannels: [String],
         pulse: {
-            weekday: Number,
-            start: Number,
-            end: Number
+            weekday: String,
+            hour: String,
+            minute: String
         }
     })
 
@@ -139,7 +141,7 @@ async function main() {
     db.Charter = mongoose.model('Charter', charterSchema);
     db.Board = mongoose.model('Board', postBoardSchema);
     db.UserProfile = mongoose.model('UserProfile', userProfileSchema);
-    db.TeamAgreement = mongoose.model('Team', teamAgreementSchema);
+    db.TeamAgreement = mongoose.model('TeamAgreement', teamAgreementSchema);
 }
 
 export default db;

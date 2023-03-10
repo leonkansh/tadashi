@@ -24,9 +24,9 @@ router.get('/:orgid', async (req, res) => {
             if (teamAgreement != null) {
                 res.json({
                     status: 'success',
-                    orgid: teamAgreement.orgid,
+                    teamGoals: teamAgreement.teamGoals,
                     meetingTimes: teamAgreement.meetingTimes,
-                    workload: teamAgreement.workload,
+                    communicationChannels: teamAgreement.communicationChannels,
                     pulse: teamAgreement.pulse
                 });
             } else {
@@ -54,13 +54,40 @@ router.post('/create', async (req, res) => {
     // console.log('sessionIsAuthenticated: ' + req.session.id)
     // if(req.session.isAuthenticated) {
         try {
-            console.log('here');
-            console.log(req.body.orgid);
+            const orgid = req.body.orgid;
+            
+            let org = await req.db.Org.findById(orgid);
+
+            let teamGoals = req.body.teamGoals;
+
+            let meetingTimesArr = req.body.meetingTimes;
+            let meetingTimes = [];
+            for (let i = 0; i < meetingTimesArr.length; i++) {
+                let content = {
+                    weekday: meetingTimesArr[i][0],
+                    startHour: meetingTimesArr[i][1],
+                    startMinute: meetingTimesArr[i][2],
+                    endHour: meetingTimesArr[i][3],
+                    endMinute: meetingTimesArr[i][4]
+                }
+                meetingTimes.push(content)
+            }
+
+            let communicationChannels = req.body.communicationChannels;
+
+            let pulseArr = req.body.pulse;
+            let pulse = {
+                weekday: pulseArr[0],
+                hour: pulseArr[1],
+                minute: pulseArr[2]
+            };
+
             let teamAgreement = await req.db.TeamAgreement.create({
-                orgid : req.body.orgid,
-                meetingTimes: req.body.meetingTimes,
-                workload: req.body.workload,
-                pulse: req.body.pulse
+                org : org,
+                teamGoals: teamGoals,
+                meetingTimes: meetingTimes,
+                communicationChannels: communicationChannels,
+                pulse: pulse
             });
             res.json({
                 status: 'success',
@@ -68,6 +95,7 @@ router.post('/create', async (req, res) => {
                 teamAgreementid: teamAgreement._id
             });
         } catch (error) {
+            console.log(error)
             res.json({
                 status: 'error',
                 error: 'error'
