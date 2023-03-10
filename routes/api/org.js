@@ -359,6 +359,46 @@ router.get('/:orgid/members', async (req, res) => {
     }
 });
 
+
+/* PUT: /{orgid}/viewed
+    pushes user id to viewed array in orgs
+*/
+router.put('/:orgid/viewed', async (req, res) => {
+    //if (req.session.isAuthenticated) {
+        try {
+            const orgid = req.params.orgid;
+            const userid = req.body.userid;
+            let user = await req.db.User.findById(
+                userid
+            )
+            let org = await req.db.Org.findByIdAndUpdate(
+                orgid,
+                {
+                    $push: { 
+                        "viewed": user
+                    }
+                }
+            ).exec();
+            await org.save();
+            res.json({
+                status: 'success'
+            })
+
+        } catch (error) {
+            console.log(error)
+            res.json({
+                status: 'error',
+                error: '404'
+            });
+        }
+    // } else {
+    //     res.json({
+    //         status: 'error',
+    //         error: 'not authenticated'
+    //     });
+    // }
+});
+
 /* POST: /{orgid}/kick
     Remove a user from specified organization
     Payload Body:
