@@ -86,6 +86,7 @@ router.get('/:orgid', async (req, res) => {
                 description: org.description,
                 members: org.members,
                 teams: org.teams,
+                viewed: org.viewed,
                 accessCode: accessCode
             });
         } catch (error) {
@@ -364,7 +365,7 @@ router.get('/:orgid/members', async (req, res) => {
     pushes user id to viewed array in orgs
 */
 router.put('/:orgid/viewed', async (req, res) => {
-    //if (req.session.isAuthenticated) {
+    if (req.session.isAuthenticated) {
         try {
             const orgid = req.params.orgid;
             const userid = req.body.userid;
@@ -391,12 +392,12 @@ router.put('/:orgid/viewed', async (req, res) => {
                 error: '404'
             });
         }
-    // } else {
-    //     res.json({
-    //         status: 'error',
-    //         error: 'not authenticated'
-    //     });
-    // }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
 });
 
 /* POST: /{orgid}/kick
