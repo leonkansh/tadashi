@@ -134,6 +134,14 @@ async function main() {
         }]
     });
 
+    const pulseSchema = new mongoose.Schema({
+        orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        questions: [String],
+        answers: [String],
+        week: Number
+    });
+
     db.User = mongoose.model('User', userSchema);
     db.Org = mongoose.model('Org', orgSchema);
     db.Msg = mongoose.model('Msg', msgSchema);
@@ -142,6 +150,7 @@ async function main() {
     db.Board = mongoose.model('Board', postBoardSchema);
     db.UserProfile = mongoose.model('UserProfile', userProfileSchema);
     db.TeamAgreement = mongoose.model('TeamAgreement', teamAgreementSchema);
+    db.Pulse = mongoose.model('Pulse', pulseSchema);
 }
 
 export default db;

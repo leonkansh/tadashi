@@ -11,8 +11,9 @@ import chartersRouter from './routes/api/charters.js';
 import assignmentsRouter from './routes/api/assignments.js';
 import messagesRouter from './routes/api/msg.js';
 import boardsRouter from './routes/api/boards.js';
-import userProfileRouter from './routes/api/userprofile.js'
-import teamAgreementRouter from './routes/api/teamAgreement.js'
+import userProfileRouter from './routes/api/userprofile.js';
+import teamAgreementRouter from './routes/api/teamAgreement.js';
+import pulseRouter from './routes/api/pulse.js'
 import cors from 'cors';
 import dotenv from 'dotenv';
 
@@ -163,6 +164,7 @@ app.use("/api/assignments", assignmentsRouter);
 app.use("/api/msg", messagesRouter);
 app.use("/api/board", boardsRouter);
 app.use("/api/userprofile", userProfileRouter);
-app.use("/api/teamAgreement", teamAgreementRouter)
+app.use("/api/teamAgreement", teamAgreementRouter);
+app.use("/api/pulse", pulseRouter);
 
 export default app;
