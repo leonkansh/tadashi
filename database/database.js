@@ -24,7 +24,8 @@ async function main() {
         major: String,
         MBTI: String,
         phone: String,
-        workstyle: String
+        workstyle: String,
+        profilePic: String
     });
 
     const userProfileSchema = new mongoose.Schema({

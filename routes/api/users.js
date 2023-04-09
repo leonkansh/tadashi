@@ -3,6 +3,7 @@
         /api/users
 */
 import express from 'express';
+import { promises as fs } from 'fs';
 var router = express.Router();
 
 // Self, non-specifc query for session data
@@ -25,7 +26,8 @@ router.get('/self', async (req, res) => {
                 major : self.major,
                 MBTI : self.MBTI,
                 phone : self.phone,
-                workstyle : self.workstyle
+                workstyle : self.workstyle,
+                profilePic: self.profilePic
             });
         } catch (error) {
             // error is null for some reason
@@ -41,6 +43,43 @@ router.get('/self', async (req, res) => {
         });
     }
 });
+
+router.put('/setpic', async (req, res) => {
+    if(req.session.isAuthenticated) {
+        try {
+            const self = await req.db.User.findById(req.session.userid)
+                .populate('orgs._id', '_id name')
+                .populate('admin', '_id name');
+            
+            self.profilePic = req.body.image
+            self.save()
+            // file approach
+            //let base64string = req.body.image
+            //let base64image = base64string.split(';base64,').pop()
+            //let dir = process.cwd();
+            // fs.writeFile(`${dir}\\profile_pictures\\${self._id}.jpg`, base64image, {encoding: 'base64'}, function(err) {
+            //     if(err) {
+            //         return console.log(err);
+            //     }
+            // }); 
+            res.json({
+                status: 'success'
+            })
+        } catch (error) {
+            // error is null for some reason
+            console.log(error)
+            res.json({
+                status: 'error',
+                error: 'there was an unexpected error'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+})
 
 /* GET: /{userid}
         Returns a user profile based on a specified user id, containing
@@ -93,7 +132,8 @@ router.get('/:userid', async (req, res) => {
                 major : user.major,
                 MBTI : user.MBTI,
                 phone : user.phone,
-                workstyle : user.workstyle    
+                workstyle : user.workstyle,
+                hasPic: user.hasPic  
             });
         } else { 
             res.json({

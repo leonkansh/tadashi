@@ -129,6 +129,7 @@ router.post('/signup', async(req, res) => {
                         userType: req.body.usertype,
                         salt: saltHash.salt,
                         hash: saltHash.hash,
+                        profilePic: ''
                     }},
                     options
                 );
