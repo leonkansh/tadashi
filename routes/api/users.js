@@ -3,7 +3,7 @@
         /api/users
 */
 import express from 'express';
-import { promises as fs } from 'fs';
+//import { promises as fs } from 'fs';
 var router = express.Router();
 
 // Self, non-specifc query for session data

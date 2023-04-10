@@ -1,24 +1,27 @@
 import express from 'express';
 var router = express.Router();
 
-
-
 router.get('/:orgid/:userid', async (req, res) => {
     // console.log('sessionIsAuthenticated: ' + req.session.id)
     // if(req.session.isAuthenticated) {
         try {
-            console.log('here');
             const orgid = req.params.orgid;
             const userid = req.params.userid;
             const userprofile = await req.db.UserProfile.findOne({userid: userid, orgid: orgid});
-            if (userprofile != null) {
+
+            const user = await req.db.User.findById(req.session.userid)
+                .populate('orgs._id', '_id name')
+                .populate('admin', '_id name');
+
+            if (userprofile != null && user != null) {
                 res.json({
                     status: 'success',
                     _id: userprofile._id,
                     orgid: userprofile.orgid,
                     userid: userprofile.userid,
                     questions: userprofile.questions,
-                    answers: userprofile.answers
+                    answers: userprofile.answers,
+                    profilePic: user.profilePic
                 });
             } else {
                 res.json({
