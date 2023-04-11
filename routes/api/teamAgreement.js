@@ -59,7 +59,6 @@ router.post('/create', async (req, res) => {
             const orgid = req.body.orgid;
             
             let org = await req.db.Org.findById(orgid);
-            console.log(org.members[0]);
 
             let teamGoals = req.body.teamGoals;
 
@@ -93,7 +92,6 @@ router.post('/create', async (req, res) => {
 
             // schedule send email
             let members = org.members;
-            console.log(members);
             let memberEmails = [];
             for (let i = 0; i < members.length; i++){
                 let member = await req.db.User.findById(members[i]);
@@ -136,7 +134,7 @@ router.post('/create', async (req, res) => {
             let teamAgreement = await req.db.TeamAgreement.create({
                 org : org,
                 teamGoals: teamGoals,
-                // meetingTimes: meetingTimes,
+                meetingTimes: meetingTimes,
                 communicationChannels: communicationChannels,
                 pulse: pulse
             });
