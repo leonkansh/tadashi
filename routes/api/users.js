@@ -9,7 +9,7 @@ var router = express.Router();
 // Self, non-specifc query for session data
 router.get('/self', async (req, res) => {
     console.log(req.session);
-    if(req.session.isAuthenticated) {
+    if (req.session.isAuthenticated) {
         try {
             const self = await req.db.User.findById(req.session.userid)
                 .populate('orgs._id', '_id name')
@@ -19,14 +19,14 @@ router.get('/self', async (req, res) => {
                 email: self.email,
                 displayName: self.displayName,
                 userType: self.userType,
-                admin: self.admin, 
+                admin: self.admin,
                 orgs: self.orgs,
                 _id: self._id,
-                standing : self.standing,
-                major : self.major,
-                MBTI : self.MBTI,
-                phone : self.phone,
-                workstyle : self.workstyle,
+                standing: self.standing,
+                major: self.major,
+                MBTI: self.MBTI,
+                phone: self.phone,
+                workstyle: self.workstyle,
                 profilePic: self.profilePic
             });
         } catch (error) {
@@ -45,12 +45,12 @@ router.get('/self', async (req, res) => {
 });
 
 router.put('/setpic', async (req, res) => {
-    if(req.session.isAuthenticated) {
+    if (req.session.isAuthenticated) {
         try {
             const self = await req.db.User.findById(req.session.userid)
                 .populate('orgs._id', '_id name')
                 .populate('admin', '_id name');
-            
+
             self.profilePic = req.body.image
             self.save()
             // file approach
@@ -128,20 +128,20 @@ router.get('/:userid', async (req, res) => {
                 userType: user.userType,
                 admin: user.admin,
                 orgs: user.orgs,
-                standing : user.standing,
-                major : user.major,
-                MBTI : user.MBTI,
-                phone : user.phone,
-                workstyle : user.workstyle,
-                hasPic: user.hasPic  
+                standing: user.standing,
+                major: user.major,
+                MBTI: user.MBTI,
+                phone: user.phone,
+                workstyle: user.workstyle,
+                hasPic: user.hasPic
             });
-        } else { 
+        } else {
             res.json({
                 email: user.email,
                 displayName: user.displayName
             });
         }
-    } catch(error) {
+    } catch (error) {
         res.json({
             status: 'error',
             error: '404'
@@ -191,10 +191,10 @@ router.put('/:userid', async (req, res) => {
     Delete specified user from database
     User authentication required for specified account
 */
-router.delete('/:userid', async(req, res) => {
+router.delete('/:userid', async (req, res) => {
     try {
-        if(req.session.isAuthenticated) {
-            if(req.session.userid != req.params.userid) {
+        if (req.session.isAuthenticated) {
+            if (req.session.userid != req.params.userid) {
                 res.json({
                     status: 'error',
                     message: 'improper credentials'
@@ -237,8 +237,8 @@ router.delete('/:userid', async(req, res) => {
     }
 */
 
-router.put('/information/:userid', async(req, res) => {
-    try{
+router.put('/information/:userid', async (req, res) => {
+    try {
         const id = req.params.userid;
         const user = await req.db.User.findById(id);
         let standing = req.body.standing ? req.body.standing : null;
@@ -246,21 +246,21 @@ router.put('/information/:userid', async(req, res) => {
         let MBTI = req.body.MBTI ? req.body.MBTI : null;
         let phone = req.body.phone ? req.body.phone : null;
         let workstyle = req.body.workstyle ? req.body.workstyle : null;
-        if(standing){
+        if (standing) {
             console.log("here2");
             user.standing = standing;
             console.log(user.standing);
         }
-        if(major){
+        if (major) {
             user.major = major;
         }
-        if(MBTI){
+        if (MBTI) {
             user.MBTI = MBTI;
         }
-        if(phone){
+        if (phone) {
             user.phone = phone;
         }
-        if(workstyle){
+        if (workstyle) {
             user.workstyle = workstyle;
         }
         user.save();
@@ -281,6 +281,4 @@ router.put('/information/:userid', async(req, res) => {
     }
 })
 
-
-    
 export default router;

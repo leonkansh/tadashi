@@ -19,6 +19,9 @@
     "express-session": "^1.17.2",
     "fs": "*",
     "mongoose": "^6.2.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "node-cron": "^3.0.2",
+    "nodemailer": "^6.9.1",
+    "save": "^2.9.0"
   }
 }
