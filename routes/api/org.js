@@ -73,9 +73,11 @@ router.get('/:orgid', async (req, res) => {
             const orgid = req.params.orgid;
             const org = await req.db.Org.findById(orgid)
                 .populate('admin', '_id displayName')
-                .populate('members', '_id displayName');
-            let accessCode = null;
+                .populate('members', '_id displayName profilePic');
+
             console.log(org)
+
+            let accessCode = null;
             if(org.admin._id == req.session.userid) {
                 accessCode = org.accessCode;
             }
@@ -102,6 +104,7 @@ router.get('/:orgid', async (req, res) => {
         });
     }
 });
+
 
 /* PUT: /{orgid}
     Edit the organization, by id, description and name

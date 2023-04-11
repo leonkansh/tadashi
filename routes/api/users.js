@@ -133,7 +133,7 @@ router.get('/:userid', async (req, res) => {
                 MBTI: user.MBTI,
                 phone: user.phone,
                 workstyle: user.workstyle,
-                hasPic: user.hasPic
+                profilePic: user.profilePic
             });
         } else {
             res.json({
