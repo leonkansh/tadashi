@@ -9,21 +9,14 @@ router.get('/:orgid/:userid', async (req, res) => {
             const userid = req.params.userid;
             const userprofile = await req.db.UserProfile.findOne({userid: userid, orgid: orgid});
 
-            const user = await req.db.User.findById(userid)
-                .populate('orgs._id', '_id name')
-                .populate('admin', '_id name');
-
-            console.log(`name: ${user.displayName}`)
-
-            if (userprofile != null && user != null) {
+            if (userprofile != null) {
                 res.json({
                     status: 'success',
                     _id: userprofile._id,
                     orgid: userprofile.orgid,
                     userid: userprofile.userid,
                     questions: userprofile.questions,
-                    answers: userprofile.answers,
-                    profilePic: user.profilePic
+                    answers: userprofile.answers
                 });
             } else {
                 res.json({
