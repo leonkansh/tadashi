@@ -39,10 +39,16 @@ async function main() {
         name: String,
         admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         description: String, // can be empty
-        accessCode: String,
+        //accessCode: String,
         members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
         viewed: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] //initialized to null
     });
+
+    const orgAccessCodeSchema = new mongoose.Schema({
+        accessCode: String,
+        orgId: String,
+        createdAt: {type: Date, expires: 3600, default: Date.now}
+    })
 
     const msgSchema = new mongoose.Schema({
         orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
@@ -145,6 +151,7 @@ async function main() {
 
     db.User = mongoose.model('User', userSchema);
     db.Org = mongoose.model('Org', orgSchema);
+    db.OrgAccessCode = mongoose.model('OrgAccessCode', orgAccessCodeSchema)
     db.Msg = mongoose.model('Msg', msgSchema);
     db.Assignment = mongoose.model('Assignment', assignmentSchema);
     db.Charter = mongoose.model('Charter', charterSchema);
