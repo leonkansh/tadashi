@@ -9,7 +9,7 @@ let transporter = nodemailer.createTransport({
     }
 });
 
-let emails = ["marquito@uw.edu", "mark20020822@gmail.com"];
+let emails = ["marquito@uw.edu", "ianuw@uw.edu"];
 
 let mailOptions = {
     from: 'chimunotification@gmail.com',
@@ -19,9 +19,9 @@ let mailOptions = {
 };
 
 let second = 1;
-let minute = 29;
-let hour = 23;
-let day = 1;
+let minute = 45;
+let hour = 18;
+let day = 2;
 let dayOfMonth = '*';
 let month = '*';
 

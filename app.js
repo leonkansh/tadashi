@@ -16,6 +16,7 @@ import teamAgreementRouter from './routes/api/teamAgreement.js';
 import pulseRouter from './routes/api/pulse.js'
 import cors from 'cors';
 import dotenv from 'dotenv';
+import msIdExpress from 'microsoft-identity-express';
 
 import db from './database/database.js';
 import sessions from 'express-session';
@@ -42,6 +43,19 @@ app.use((req, res, next) => {
     req.db = db;
     next();
 });
+
+const appSettings = {
+    appCredentials: {
+        clientId:  "dd0cd16f-9890-4630-92ec-03ad70a24be1",
+        tenantId:  "f6b6dd5b-f02f-441a-99a0-162ac5060bd2",
+        clientSecret:  "KEA8Q~f0KdisC_zKNaFIt957g9q.35yYHW1O2aeI"
+    },
+    authRoutes: {
+        redirect: "http://localhost:3001/redirect",
+        error: "/error",
+        unauthorized: "/unauthorized"
+    }
+};
 
 const oneDay = 1000 * 60 * 60 * 24;
 const secret = Math.random().toString(36).replace(/[^a-z]+/g, '').substring(0, 25);
@@ -154,6 +168,16 @@ app.get('/signout', (req, res) => {
    res.redirect('/');
 });
 */
+
+const msid = new msIdExpress.WebAppAuthClientBuilder(appSettings).build();
+app.use(msid.initialize());
+
+app.get('/signin',
+    msid.signIn({postLoginRedirect: '/login'})
+)
+app.get('/signout',
+    msid.signOut({postLogoutRedirect: '/'})
+)
 
 app.use("/", indexRouter);
 app.use("/login", loginRouter);
