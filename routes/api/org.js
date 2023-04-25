@@ -24,32 +24,52 @@ router.post('/create', async (req, res) => {
                 message: 'not authenticated'
             });
         } else {
+            // get all user from the staging group
+            let orgAccessCode = await req.db.OrgAccessCode.find({
+                creator : req.session.userid
+            })
+
+            let allMembers = orgAccessCode[0].members;
+
+            // create the org with all the members
             let org = await req.db.Org.create({
                 name: req.body.name,
                 admin: req.session.userid,
-                description: req.body.description
+                description: req.body.description,
+                members: allMembers,
             });
 
-            
-            let user = await req.db.User.findByIdAndUpdate(
+            // push org to admin user's admin field
+            await req.db.User.findByIdAndUpdate(
                 req.session.userid,
                 { 
                     $push:
                     { 
-                        admin: org._id,
-                        orgs: org,
+                        admin: org._id
                     }
-                }).exec();
+                })
 
-            await req.db.Org.findByIdAndUpdate(
-                org._id,
-                {
-                    $push:
-                    {
-                        members: user
+            allMembers.forEach(uid => {
+                req.db.User.findByIdAndUpdate(
+                    uid,
+                    { 
+                        $push:
+                        {
+                            orgs : org
+                        }
                     }
-                }
-            )
+                ).exec();
+            })
+            
+            // await req.db.Org.findByIdAndUpdate(
+            //     org._id,
+            //     {
+            //         $push:
+            //         {
+            //             members: user
+            //         }
+            //     }
+            // )
 
             res.json({
                 status: "success",
@@ -162,83 +182,83 @@ router.put('/:orgid', async (req, res) => {
     Delete the organization by id
     Admin authentication required
 */
-router.delete('/:orgid', async (req, res) => {
-    if (!req.session.isAuthenticated) {
-        res.json({
-            status: 'error',
-            message: 'not authenticated'
-        })
-    } else {
-        try {
-            // Authenticate
-            const orgid = req.params.orgid;
-            const org = await req.db.Org.findById(orgid);
-            if (org.admin == req.session.userid) {
-                // Pull user list
-                let members = org.members;
+// router.delete('/:orgid', async (req, res) => {
+//     if (!req.session.isAuthenticated) {
+//         res.json({
+//             status: 'error',
+//             message: 'not authenticated'
+//         })
+//     } else {
+//         try {
+//             // Authenticate
+//             const orgid = req.params.orgid;
+//             const org = await req.db.Org.findById(orgid);
+//             if (org.admin == req.session.userid) {
+//                 // Pull user list
+//                 let members = org.members;
 
-                // FIXME: Not validated
-                // Delete from user orgs list
-                members.forEach(uid => {
-                    req.db.User.findByIdAndUpdate(
-                        uid,
-                        { $pull:
-                            {
-                                "orgs._id": orgid
-                            }
-                        }
-                    ).exec();
-                });
+//                 // FIXME: Not validated
+//                 // Delete from user orgs list
+//                 members.forEach(uid => {
+//                     req.db.User.findByIdAndUpdate(
+//                         uid,
+//                         { $pull:
+//                             {
+//                                 "orgs._id": orgid
+//                             }
+//                         }
+//                     ).exec();
+//                 });
 
-                await req.db.User.findByIdAndUpdate(
-                    org.admin._id,
-                    { $pull: {
-                        admin: orgid
-                    }
-                }).exec();
+//                 await req.db.User.findByIdAndUpdate(
+//                     org.admin._id,
+//                     { $pull: {
+//                         admin: orgid
+//                     }
+//                 }).exec();
 
-                /*
-                // Delete msg
-                await req.db.Msg.deleteOne(
-                    { 'orgid': orgid }
-                );
+//                 /*
+//                 // Delete msg
+//                 await req.db.Msg.deleteOne(
+//                     { 'orgid': orgid }
+//                 );
 
-                // Delete assignment
-                await req.db.Assignment.deleteOne(
-                    { 'orgid': orgid }
-                );
+//                 // Delete assignment
+//                 await req.db.Assignment.deleteOne(
+//                     { 'orgid': orgid }
+//                 );
 
-                // Delete charter
-                await req.db.Charter.deleteOne(
-                    { 'orgid': orgid }
-                );
-                */
+//                 // Delete charter
+//                 await req.db.Charter.deleteOne(
+//                     { 'orgid': orgid }
+//                 );
+//                 */
 
-                await req.db.Org.deleteOne({
-                    _id: orgid
-                });
+//                 await req.db.Org.deleteOne({
+//                     _id: orgid
+//                 });
                 
-                res.json({
-                    status: 'success'
-                });
-            } else {
-                res.json({
-                    status: 'error',
-                    error: 'not authenticated'
-                });
-            }
-        } catch (error) {
-            res.json({
-                status: 'error',
-                error: 'oof'
-            });
-        }
-    }
-});
+//                 res.json({
+//                     status: 'success'
+//                 });
+//             } else {
+//                 res.json({
+//                     status: 'error',
+//                     error: 'not authenticated'
+//                 });
+//             }
+//         } catch (error) {
+//             res.json({
+//                 status: 'error',
+//                 error: 'oof'
+//             });
+//         }
+//     }
+// });
 /*
     no body
 */
-router.post('/:orgid/accesscode', async (req, res) => {
+router.post('/accesscode', async (req, res) => {
     if (!req.session.isAuthenticated) {
         res.json({
             status: 'error',
@@ -253,16 +273,13 @@ router.post('/:orgid/accesscode', async (req, res) => {
             result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
 
+        let self = await req.db.User.findById(req.session.userid)
+
         await req.db.OrgAccessCode.create({
             accessCode: result,
-            orgId: req.params.orgid,
-            createdAt: new Date()
+            creator: self._id,
+            members: [self]
         });
-
-        // req.db.OrgAccessCode.createIndex(
-        //     {createdAt: 1},
-        //     {expireAfterSeconds: 5}
-        // )
 
         res.json({
             status: 'success',
@@ -281,7 +298,8 @@ router.post('/:orgid/accesscode', async (req, res) => {
 /*
     no body
 */
-router.delete('/:orgid/accesscode', async (req, res) => {
+router.delete('/accesscode', async (req, res) => {
+    
     if (!req.session.isAuthenticated) {
         res.json({
             status: 'error',
@@ -289,16 +307,24 @@ router.delete('/:orgid/accesscode', async (req, res) => {
         })
     }
     try {
+        let self = await req.db.User.findById(req.session.userid)
+        console.log("this is the user id")
+        console.log(self._id)
         let test = await req.db.OrgAccessCode.find({
-            "orgId" : req.params.orgid
+            creator : req.session.userid
         })
+        console.log("this is the access code thingy")
+        console.log(test)
         if (test.length != 0) {
             await req.db.OrgAccessCode.deleteOne({
-                orgId : req.params.orgid
+                creator : req.session.userid
             })
+            console.log("deleted document")
         }
+        console.log("hello")
         res.json({
             status: 'success',
+            thingies: 'HELLO'
         })
     } catch (e) {
         res.json({
@@ -327,50 +353,63 @@ router.post('/join', async (req, res) => {
         try {
             const sessionUserId = req.session.userid;
 
-            // find org id using access code
+            // find accesscode id using access code
             let orgAccessCode = await req.db.OrgAccessCode.find({
                 accessCode : req.body.accessCode
             })
-            let orgid = undefined
             if (orgAccessCode.length == 0) {
                 res.json({
                     status: 'error',
                     error: 'code does not exist'
                 });
                 return
-            } else {
-                orgid = orgAccessCode[0].orgId
             }
 
-            let org = await req.db.Org.findById(sessionUserId)
-            if (org.members.length >= 5) {
+            // check if the staging group is full
+            if (orgAccessCode.members >= 5) {
                 res.json({
                     status: 'error',
-                    error: 'org is full'
+                    error: 'staging is full'
                 });
+                return;
             }
 
-            // add org to user
-            let user = await req.db.User.findByIdAndUpdate(
-                sessionUserId,
-                { $push: {
-                orgs: {
-                    _id: orgid
-                }
-            }});
-            // add user to org
-            await req.db.Org.findByIdAndUpdate(
-                orgid,
-                {
+            // push self to staging member array
+            let self = await req.db.User.findById(req.session.userid)
+            await req.db.OrgAccessCode.findByIdAndUpdate(
+                orgAccessCode[0]._id,
+                { 
                     $push:
-                    {
-                        members: sessionUserId
+                    { 
+                        members : self
                     }
-                }
-            ).exec();
-            await user.save();
+                })
+
+            //orgAccessCode.save()
+            console.log(orgAccessCode)
+
+            // add org to user
+            // let user = await req.db.User.findByIdAndUpdate(
+            //     sessionUserId,
+            //     { $push: {
+            //     orgs: {
+            //         _id: orgid
+            //     }
+            // }});
+            // // add user to org
+            // await req.db.Org.findByIdAndUpdate(
+            //     orgid,
+            //     {
+            //         $push:
+            //         {
+            //             members: sessionUserId
+            //         }
+            //     }
+            // ).exec();
+            // await user.save();
             res.json({
                 status: 'success'
+
             });
             return
         } catch (error) {

@@ -46,8 +46,10 @@ async function main() {
 
     const orgAccessCodeSchema = new mongoose.Schema({
         accessCode: String,
-        orgId: String,
-        createdAt: {type: Date, expires: 3600, default: Date.now}
+        //orgId: String,
+        creator: String,
+        members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        expiresAt: {type: Date, expires: 3600, default: Date.now}
     })
 
     const msgSchema = new mongoose.Schema({
@@ -151,7 +153,7 @@ async function main() {
 
     db.User = mongoose.model('User', userSchema);
     db.Org = mongoose.model('Org', orgSchema);
-    db.OrgAccessCode = mongoose.model('OrgAccessCode', orgAccessCodeSchema)
+    db.OrgAccessCode = mongoose.model('OrgAccessCode', orgAccessCodeSchema);
     db.Msg = mongoose.model('Msg', msgSchema);
     db.Assignment = mongoose.model('Assignment', assignmentSchema);
     db.Charter = mongoose.model('Charter', charterSchema);
