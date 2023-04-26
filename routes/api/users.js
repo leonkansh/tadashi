@@ -12,7 +12,7 @@ router.get('/self', async (req, res) => {
     if (req.session.isAuthenticated) {
         try {
             const self = await req.db.User.findById(req.session.userid)
-                .populate('orgs._id', '_id name')
+                .populate('orgs._id', '_id name courseTitle quarterOffered')
                 .populate('admin', '_id name');
             res.json({
                 status: 'success',

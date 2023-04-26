@@ -10,9 +10,9 @@ var router = express.Router();
     Create a new organization, sets logged user as administrator
     Payload body:
     {
-        name: 'organizations name',
-        description: 'organizations description',
-        
+        courseTitle,
+        quarterOffered,
+        name
     }
     User authentication required
 */
@@ -35,7 +35,8 @@ router.post('/create', async (req, res) => {
             let org = await req.db.Org.create({
                 name: req.body.name,
                 admin: req.session.userid,
-                description: req.body.description,
+                courseTitle: req.body.courseTitle,
+                quarterOffered: req.body.quarterOffered,
                 members: allMembers,
             });
 
@@ -117,7 +118,8 @@ router.get('/:orgid', async (req, res) => {
                 status: 'success',
                 name: org.name,
                 admin: org.admin.displayName,
-                description: org.description,
+                courseTitle: org.courseTitle,
+                quarterOffered: org.quarterOffered,
                 members: org.members,
                 teams: org.teams,
                 viewed: org.viewed,

@@ -38,7 +38,8 @@ async function main() {
     const orgSchema = new mongoose.Schema({
         name: String,
         admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        description: String, // can be empty
+        courseTitle: String, // can be empty
+        quarterOffered: String,
         //accessCode: String,
         members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
         viewed: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] //initialized to null
