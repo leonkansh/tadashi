@@ -11,29 +11,48 @@ async function main() {
 
     const userSchema = new mongoose.Schema({
         email: String,
-        displayName: String,
+        firstName: String,
+        lastName: String,
+        userType: String,
         hash: String,
         salt: String,
         admin: [{type: mongoose.Schema.Types.ObjectId, ref: "Org"}],
         orgs: [{
             _id: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
-            teamid: Number,
             name: String
-        }]
+        }],
+        standing: String,
+        major: String,
+        MBTI: String,
+        phone: String,
+        workstyle: String,
+        profilePic: String
+    });
+
+    const userProfileSchema = new mongoose.Schema({
+        userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        questions: [String],
+        answers: [String],
     });
 
     const orgSchema = new mongoose.Schema({
         name: String,
         admin: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        description: String, // can be empty
-        accessCode: String,
+        courseTitle: String, // can be empty
+        quarterOffered: String,
+        //accessCode: String,
         members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-        teams: [{ // initialize null
-            members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-            teamid: Number,
-            name: String
-        }]
+        viewed: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }] //initialized to null
     });
+
+    const orgAccessCodeSchema = new mongoose.Schema({
+        accessCode: String,
+        //orgId: String,
+        creator: String,
+        members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+        expiresAt: {type: Date, expires: 3600, default: Date.now}
+    })
 
     const msgSchema = new mongoose.Schema({
         orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
@@ -93,6 +112,24 @@ async function main() {
         }]
     });
 
+    const teamAgreementSchema = new mongoose.Schema({
+        org: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        teamGoals: [String],
+        meetingTimes: [{
+            weekday: String,
+            startHour: String,
+            startMinute: String,
+            endHour: String,
+            endMinute: String
+        }],
+        communicationChannels: [String],
+        pulse: {
+            weekday: String,
+            hour: String,
+            minute: String
+        }
+    })
+
     const postBoardSchema = new mongoose.Schema({
         orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
         teamid: Number,
@@ -108,12 +145,24 @@ async function main() {
         }]
     });
 
+    const pulseSchema = new mongoose.Schema({
+        orgid: { type: mongoose.Schema.Types.ObjectId, ref: "Org" },
+        userid: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        questions: [String],
+        answers: [String],
+        week: Number
+    });
+
     db.User = mongoose.model('User', userSchema);
     db.Org = mongoose.model('Org', orgSchema);
+    db.OrgAccessCode = mongoose.model('OrgAccessCode', orgAccessCodeSchema);
     db.Msg = mongoose.model('Msg', msgSchema);
     db.Assignment = mongoose.model('Assignment', assignmentSchema);
     db.Charter = mongoose.model('Charter', charterSchema);
     db.Board = mongoose.model('Board', postBoardSchema);
+    db.UserProfile = mongoose.model('UserProfile', userProfileSchema);
+    db.TeamAgreement = mongoose.model('TeamAgreement', teamAgreementSchema);
+    db.Pulse = mongoose.model('Pulse', pulseSchema);
 }
 
 export default db;

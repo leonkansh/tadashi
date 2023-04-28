@@ -8,33 +8,31 @@ var router = express.Router();
         adds userid to session
         redirects to '/'
 */
-/* FOR Microsoft SSO
-router.get('/', async (req, res) => {
-    try {
-        const options = {
-            returnDocument: 'after',
-            upsert: true
-        }
+// FOR Microsoft SSO
+// router.get('/', async (req, res) => {
+//     try {
+//         const options = {
+//             returnDocument: 'after',
+//             upsert: true
+//         }
+//         let user = await req.db.User.findOneAndUpdate(
+//             { email: req.session.account.username },
+//             { $setOnInsert: {
+//                 email: req.session.account.username,
+//                 displayName: req.session.account.name
+//             }},
+//             options
+//         );
+//         req.session.userid = user._id;
+//         res.redirect('/') // Landing page
+//     } catch (error) {
+//         res.json({
+//             status: 'error',
+//             error: 'sad face'
+//         });
+//     }
+// });
 
-        let user = await req.db.User.findOneAndUpdate(
-            { email: req.session.account.username },
-            { $setOnInsert: {
-                email: req.session.account.username,
-                displayName: req.session.account.name
-            }},
-            options
-        );
-
-        req.session.userid = user._id;
-        res.redirect('/') // Landing page
-    } catch (error) {
-        res.json({
-            status: 'error',
-            error: 'sad face'
-        });
-    }
-});
-*/
 
 /* Signs in user and sets session
     Payload:
@@ -62,27 +60,32 @@ router.post('/signin', async(req, res) => {
                     username: user.email,
                     name: user.displayName
                 }
-                req.session.userid = user._id
-
+                req.session.userid = user._id;
+                console.log(user.userType)
                 res.json({
                     status: 'success',
                     authenticated: req.session.isAuthenticated,
                     _id: user._id,
                     email: user.email,
-                    displayName: user.displayName,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    userType: user.userType,
                     admin: user.admin,
                     orgs: user.orgs
                 });
+                
             } else {
                 res.json({
                     status: 'error',
                     error: 'incorrect password'
                 });
             }
+            
         } catch (error) {
+            console.log(error)
             res.json({
                 status: 'error',
-                error: 'oops'
+                error: 'incorrect email'
             });
         }
     }
@@ -93,7 +96,9 @@ router.post('/signin', async(req, res) => {
     {
         email: emailed used for registration,
         password: password used for registration,
-        name: name used for display
+        firstName
+        lastName
+        userType: admin user or normal user
     }
 */
 router.post('/signup', async(req, res) => {
@@ -116,18 +121,19 @@ router.post('/signup', async(req, res) => {
                     returnDocument: 'after',
                     upsert: true
                 }
-            
                 let user = await req.db.User.findOneAndUpdate(
                     { email: req.body.email },
                     { $setOnInsert: {
                         email: req.body.email,
-                        displayName: req.body.name,
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
+                        userType: req.body.usertype,
                         salt: saltHash.salt,
-                        hash: saltHash.hash
+                        hash: saltHash.hash,
+                        profilePic: ''
                     }},
                     options
                 );
-
                 req.session.isAuthenticated = true;
                 req.session.account = {
                     username: user.email,
@@ -141,6 +147,7 @@ router.post('/signup', async(req, res) => {
                     _id: req.session.userid,
                     email: user.email,
                     displayName: user.displayName,
+                    userType: user.usertype,
                     admin: [],
                     orgs: []
                 });

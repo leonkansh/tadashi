@@ -10,9 +10,9 @@ var router = express.Router();
     Create a new organization, sets logged user as administrator
     Payload body:
     {
-        name: 'organizations name',
-        description: 'organizations description',
-        accessCode: 'organizations access code'
+        courseTitle,
+        quarterOffered,
+        name
     }
     User authentication required
 */
@@ -24,13 +24,23 @@ router.post('/create', async (req, res) => {
                 message: 'not authenticated'
             });
         } else {
+            // get all user from the staging group
+            let orgAccessCode = await req.db.OrgAccessCode.find({
+                creator : req.session.userid
+            })
+
+            let allMembers = orgAccessCode[0].members;
+
+            // create the org with all the members
             let org = await req.db.Org.create({
                 name: req.body.name,
                 admin: req.session.userid,
-                description: req.body.description,
-                accessCode: req.body.accessCode
+                courseTitle: req.body.courseTitle,
+                quarterOffered: req.body.quarterOffered,
+                members: allMembers,
             });
 
+            // push org to admin user's admin field
             await req.db.User.findByIdAndUpdate(
                 req.session.userid,
                 { 
@@ -38,9 +48,33 @@ router.post('/create', async (req, res) => {
                     { 
                         admin: org._id
                     }
-                }).exec();
+                })
+
+            allMembers.forEach(uid => {
+                req.db.User.findByIdAndUpdate(
+                    uid,
+                    { 
+                        $push:
+                        {
+                            orgs : org
+                        }
+                    }
+                ).exec();
+            })
+            
+            // await req.db.Org.findByIdAndUpdate(
+            //     org._id,
+            //     {
+            //         $push:
+            //         {
+            //             members: user
+            //         }
+            //     }
+            // )
+
             res.json({
-                status: "success"
+                status: "success",
+                orgid: org._id
             });
         }
     } catch (error) {
@@ -67,22 +101,28 @@ router.post('/create', async (req, res) => {
 */
 router.get('/:orgid', async (req, res) => {
     if(req.session.isAuthenticated) {
+        console.log('i am authenticated')
         try {
             const orgid = req.params.orgid;
             const org = await req.db.Org.findById(orgid)
-                .populate('admin', '_id displayName')
-                .populate('members', '_id displayName');
+                .populate('admin', '_id firstName lastName')
+                .populate('members', '_id firstName lastName profilePic');
+
+            console.log(org)
+
             let accessCode = null;
             if(org.admin._id == req.session.userid) {
                 accessCode = org.accessCode;
             }
             res.json({
+                status: 'success',
                 name: org.name,
-                admin: org.admin.displayName,
-                description: org.description,
+                admin: org.admin,
+                courseTitle: org.courseTitle,
+                quarterOffered: org.quarterOffered,
                 members: org.members,
                 teams: org.teams,
-                accessCode: accessCode
+                viewed: org.viewed,
             });
         } catch (error) {
             res.json({
@@ -97,6 +137,7 @@ router.get('/:orgid', async (req, res) => {
         });
     }
 });
+
 
 /* PUT: /{orgid}
     Edit the organization, by id, description and name
@@ -143,81 +184,159 @@ router.put('/:orgid', async (req, res) => {
     Delete the organization by id
     Admin authentication required
 */
-router.delete('/:orgid', async (req, res) => {
+// router.delete('/:orgid', async (req, res) => {
+//     if (!req.session.isAuthenticated) {
+//         res.json({
+//             status: 'error',
+//             message: 'not authenticated'
+//         })
+//     } else {
+//         try {
+//             // Authenticate
+//             const orgid = req.params.orgid;
+//             const org = await req.db.Org.findById(orgid);
+//             if (org.admin == req.session.userid) {
+//                 // Pull user list
+//                 let members = org.members;
+
+//                 // FIXME: Not validated
+//                 // Delete from user orgs list
+//                 members.forEach(uid => {
+//                     req.db.User.findByIdAndUpdate(
+//                         uid,
+//                         { $pull:
+//                             {
+//                                 "orgs._id": orgid
+//                             }
+//                         }
+//                     ).exec();
+//                 });
+
+//                 await req.db.User.findByIdAndUpdate(
+//                     org.admin._id,
+//                     { $pull: {
+//                         admin: orgid
+//                     }
+//                 }).exec();
+
+//                 /*
+//                 // Delete msg
+//                 await req.db.Msg.deleteOne(
+//                     { 'orgid': orgid }
+//                 );
+
+//                 // Delete assignment
+//                 await req.db.Assignment.deleteOne(
+//                     { 'orgid': orgid }
+//                 );
+
+//                 // Delete charter
+//                 await req.db.Charter.deleteOne(
+//                     { 'orgid': orgid }
+//                 );
+//                 */
+
+//                 await req.db.Org.deleteOne({
+//                     _id: orgid
+//                 });
+                
+//                 res.json({
+//                     status: 'success'
+//                 });
+//             } else {
+//                 res.json({
+//                     status: 'error',
+//                     error: 'not authenticated'
+//                 });
+//             }
+//         } catch (error) {
+//             res.json({
+//                 status: 'error',
+//                 error: 'oof'
+//             });
+//         }
+//     }
+// });
+/*
+    no body
+*/
+router.post('/accesscode', async (req, res) => {
     if (!req.session.isAuthenticated) {
         res.json({
             status: 'error',
             message: 'not authenticated'
         })
-    } else {
-        try {
-            // Authenticate
-            const orgid = req.params.orgid;
-            const org = await req.db.Org.findById(orgid);
-            if (org.admin == req.session.userid) {
-                // Pull user list
-                let members = org.members;
-
-                // FIXME: Not validated
-                // Delete from user orgs list
-                members.forEach(uid => {
-                    req.db.User.findByIdAndUpdate(
-                        uid,
-                        { $pull:
-                            {
-                                "orgs._id": orgid
-                            }
-                        }
-                    ).exec();
-                });
-
-                await req.db.User.findByIdAndUpdate(
-                    org.admin._id,
-                    { $pull: {
-                        admin: orgid
-                    }
-                }).exec();
-
-                /*
-                // Delete msg
-                await req.db.Msg.deleteOne(
-                    { 'orgid': orgid }
-                );
-
-                // Delete assignment
-                await req.db.Assignment.deleteOne(
-                    { 'orgid': orgid }
-                );
-
-                // Delete charter
-                await req.db.Charter.deleteOne(
-                    { 'orgid': orgid }
-                );
-                */
-
-                await req.db.Org.deleteOne({
-                    _id: orgid
-                });
-                
-                res.json({
-                    status: 'success'
-                });
-            } else {
-                res.json({
-                    status: 'error',
-                    error: 'not authenticated'
-                });
-            }
-        } catch (error) {
-            res.json({
-                status: 'error',
-                error: 'oof'
-            });
-        }
     }
-});
+    try {
+        const characters ='abcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        const charactersLength = characters.length;
+        for ( let i = 0; i < 7; i++ ) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
 
-/* POST: /{orgid}/join
+        let self = await req.db.User.findById(req.session.userid)
+
+        await req.db.OrgAccessCode.create({
+            accessCode: result,
+            creator: self._id,
+            members: [self]
+        });
+
+        res.json({
+            status: 'success',
+            accessCode: result
+        })
+        
+    } catch (e) {
+        console.log(e)
+        res.json({
+            status: 'error',
+            error: 'something went wrong'
+        });
+    }
+})
+
+/*
+    no body
+*/
+router.delete('/accesscode', async (req, res) => {
+    
+    if (!req.session.isAuthenticated) {
+        res.json({
+            status: 'error',
+            message: 'not authenticated'
+        })
+    }
+    try {
+        let self = await req.db.User.findById(req.session.userid)
+        console.log("this is the user id")
+        console.log(self._id)
+        let test = await req.db.OrgAccessCode.find({
+            creator : req.session.userid
+        })
+        console.log("this is the access code thingy")
+        console.log(test)
+        if (test.length != 0) {
+            await req.db.OrgAccessCode.deleteOne({
+                creator : req.session.userid
+            })
+            console.log("deleted document")
+        }
+        console.log("hello")
+        res.json({
+            status: 'success',
+            thingies: 'HELLO'
+        })
+    } catch (e) {
+        res.json({
+            status: 'error',
+            error: 'something went wrong'
+        });
+    }
+})
+
+/* POST: /join
     Adds logged user to specified organization.
     Payload Body:
     {
@@ -225,50 +344,82 @@ router.delete('/:orgid', async (req, res) => {
     }
     User authentication required
 */
-router.post('/:orgid/join', async (req, res) => {
+router.post('/join', async (req, res) => {
     if (!req.session.isAuthenticated) {
         res.json({
             status: 'error',
             message: 'not authenticated'
         })
+        return
     } else {
         try {
             const sessionUserId = req.session.userid;
-            const orgid = req.params.orgid;
-            const accessCode = req.body.accessCode;
-            let org = await req.db.Org.findById(orgid);
-            if (org.accessCode == accessCode) {
-                let user = await req.db.User.findByIdAndUpdate(
-                    sessionUserId,
-                    { $push: {
-                    orgs: {
-                        _id: orgid
-                    }
-                }});
-                await req.db.Org.findByIdAndUpdate(
-                    orgid,
-                    {
-                        $push:
-                        {
-                            members: sessionUserId
-                        }
-                    }
-                ).exec();
-                await user.save();
-                res.json({
-                    status: 'success'
-                });
-            } else {
+
+            // find accesscode id using access code
+            let orgAccessCode = await req.db.OrgAccessCode.find({
+                accessCode : req.body.accessCode
+            })
+            if (orgAccessCode.length == 0) {
                 res.json({
                     status: 'error',
-                    error: 'incorrect access code'
+                    error: 'code does not exist'
                 });
+                return
             }
+
+            // check if the staging group is full
+            if (orgAccessCode.members >= 5) {
+                res.json({
+                    status: 'error',
+                    error: 'staging is full'
+                });
+                return;
+            }
+
+            // push self to staging member array
+            let self = await req.db.User.findById(req.session.userid)
+            await req.db.OrgAccessCode.findByIdAndUpdate(
+                orgAccessCode[0]._id,
+                { 
+                    $push:
+                    { 
+                        members : self
+                    }
+                })
+
+            //orgAccessCode.save()
+            console.log(orgAccessCode)
+
+            // add org to user
+            // let user = await req.db.User.findByIdAndUpdate(
+            //     sessionUserId,
+            //     { $push: {
+            //     orgs: {
+            //         _id: orgid
+            //     }
+            // }});
+            // // add user to org
+            // await req.db.Org.findByIdAndUpdate(
+            //     orgid,
+            //     {
+            //         $push:
+            //         {
+            //             members: sessionUserId
+            //         }
+            //     }
+            // ).exec();
+            // await user.save();
+            res.json({
+                status: 'success'
+
+            });
+            return
         } catch (error) {
             res.json({
                 status: 'error',
                 error: '404'
             });
+            return
         }
     }
 });
@@ -342,6 +493,46 @@ router.get('/:orgid/members', async (req, res) => {
                 members: org.members
             });
         } catch (error) {
+            res.json({
+                status: 'error',
+                error: '404'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+});
+
+
+/* PUT: /{orgid}/viewed
+    pushes user id to viewed array in orgs
+*/
+router.put('/:orgid/viewed', async (req, res) => {
+    if (req.session.isAuthenticated) {
+        try {
+            const orgid = req.params.orgid;
+            const userid = req.body.userid;
+            let user = await req.db.User.findById(
+                userid
+            )
+            let org = await req.db.Org.findByIdAndUpdate(
+                orgid,
+                {
+                    $push: { 
+                        "viewed": user
+                    }
+                }
+            ).exec();
+            await org.save();
+            res.json({
+                status: 'success'
+            })
+
+        } catch (error) {
+            console.log(error)
             res.json({
                 status: 'error',
                 error: '404'
@@ -431,76 +622,76 @@ router.post('/:orgid/kick', async (req, res) => {
     }
     Admin authentication required
 */
-router.post('/:orgid/teams/random', async (req, res) => {
-    if (req.session.isAuthenticated) {
-        try {
-            const userid = req.session.userid;
-            const orgid = req.params.orgid;
-            let org = await req.db.Org.findById(orgid);
-            if (org.admin._id == userid) {
-                const teamSize = req.body.teamSize;
-                const members = org.members;
-                let teams = []; 
-                let remainingStudents = members.length;
-                while (remainingStudents > 0) {
-                    let newTeam = [];
-                    for(let i = 0; i < teamSize; i++) {
-                        if (remainingStudents > 0) {
-                            newTeam.push(members[remainingStudents - 1]);
-                            remainingStudents--;
-                        }
-                    }
-                    console.log(remainingStudents)
-                    console.log(newTeam)
-                    if (newTeam.length != 0) {
-                        teams.push(newTeam);
-                    }
-                }
-                for (let i = 0; i < teams.length; i++) {
-                    let tempTeam = {
-                        members: teams[i],
-                        teamid: i + 1,
-                        name: `Team ${i + 1}`
-                    }
-                    org.teams.push(tempTeam)
-                    teams[i].forEach(mem => {
-                        req.db.User.findByIdAndUpdate(
-                            mem,
-                            {
-                                '$set': {
-                                    'orgs.$[el].teamid': i + 1,
-                                    'orgs.$[el].name': `Team ${i + 1}`
-                                }
-                            },
-                            {
-                                arrayFilters: [{ 'el._id': orgid }]
-                            }
-                        ).exec();
-                    });
-                }
-                await org.save();
-                res.json({
-                    status: 'success'
-                });
-            } else {
-                res.json({
-                    status: 'error',
-                    error: 'improper credentials'
-                });
-            }
-        } catch (error) {
-            res.json({
-                status: 'error',
-                error: '404'
-            });
-        }
-    } else {
-        res.json({
-            status: 'error',
-            error: 'not authenticated'
-        });
-    }
-});
+// router.post('/:orgid/teams/random', async (req, res) => {
+//     if (req.session.isAuthenticated) {
+//         try {
+//             const userid = req.session.userid;
+//             const orgid = req.params.orgid;
+//             let org = await req.db.Org.findById(orgid);
+//             if (org.admin._id == userid) {
+//                 const teamSize = req.body.teamSize;
+//                 const members = org.members;
+//                 let teams = []; 
+//                 let remainingStudents = members.length;
+//                 while (remainingStudents > 0) {
+//                     let newTeam = [];
+//                     for(let i = 0; i < teamSize; i++) {
+//                         if (remainingStudents > 0) {
+//                             newTeam.push(members[remainingStudents - 1]);
+//                             remainingStudents--;
+//                         }
+//                     }
+//                     console.log(remainingStudents)
+//                     console.log(newTeam)
+//                     if (newTeam.length != 0) {
+//                         teams.push(newTeam);
+//                     }
+//                 }
+//                 for (let i = 0; i < teams.length; i++) {
+//                     let tempTeam = {
+//                         members: teams[i],
+//                         teamid: i + 1,
+//                         name: `Team ${i + 1}`
+//                     }
+//                     org.teams.push(tempTeam)
+//                     teams[i].forEach(mem => {
+//                         req.db.User.findByIdAndUpdate(
+//                             mem,
+//                             {
+//                                 '$set': {
+//                                     'orgs.$[el].teamid': i + 1,
+//                                     'orgs.$[el].name': `Team ${i + 1}`
+//                                 }
+//                             },
+//                             {
+//                                 arrayFilters: [{ 'el._id': orgid }]
+//                             }
+//                         ).exec();
+//                     });
+//                 }
+//                 await org.save();
+//                 res.json({
+//                     status: 'success'
+//                 });
+//             } else {
+//                 res.json({
+//                     status: 'error',
+//                     error: 'improper credentials'
+//                 });
+//             }
+//         } catch (error) {
+//             res.json({
+//                 status: 'error',
+//                 error: '404'
+//             });
+//         }
+//     } else {
+//         res.json({
+//             status: 'error',
+//             error: 'not authenticated'
+//         });
+//     }
+// });
 
 /* GET: /{orgid}/team/{teamid}
     Returns members of the associated team within an organization
@@ -525,13 +716,13 @@ router.post('/:orgid/teams/random', async (req, res) => {
     }
 */
 router.get('/:orgid/team/:teamid', async (req, res) => {
-    let auth = await verifyTeamMember(
-        req.session.userid,
-        req.params.orgid,
-        req.params.teamid,
-        req.db
-    );
-    if(req.session.isAuthenticated && auth) {
+    // let auth = await verifyTeamMember(
+    //     req.session.userid,
+    //     req.params.orgid,
+    //     req.params.teamid,
+    //     req.db
+    // );
+    // if(req.session.isAuthenticated && auth) {
         try {
             let team = await req.db.Org.findById(req.params.orgid)
                 .select({
@@ -549,12 +740,12 @@ router.get('/:orgid/team/:teamid', async (req, res) => {
                 error: 'oops'
             });
         }
-    } else {
-        res.json({
-            status: 'error',
-            error: 'not authenticated'
-        });
-    }
+    // } else {
+    //     res.json({
+    //         status: 'error',
+    //         error: 'not authenticated'
+    //     });
+    // }
 });
 
 /* PUT: /{orgid}/team/{teamid}
@@ -612,5 +803,11 @@ router.put('/:orgid/team/:teamid', async (req, res) => {
         });
     }
 });
+
+
+
+//viewed
+
+//viewed/
 
 export default router;

@@ -3,27 +3,38 @@
         /api/users
 */
 import express from 'express';
+//import { promises as fs } from 'fs';
 var router = express.Router();
 
 // Self, non-specifc query for session data
 router.get('/self', async (req, res) => {
-    if(req.session.isAuthenticated) {
+    console.log(req.session);
+    if (req.session.isAuthenticated) {
         try {
             const self = await req.db.User.findById(req.session.userid)
-                .populate('orgs._id', '_id name')
+                .populate('orgs._id', '_id name courseTitle quarterOffered')
                 .populate('admin', '_id name');
             res.json({
                 status: 'success',
                 email: self.email,
-                displayName: self.displayName,
+                firstName: self.firstName,
+                lastName: self.lastName,
+                userType: self.userType,
                 admin: self.admin,
                 orgs: self.orgs,
-                _id: self._id
+                _id: self._id,
+                standing: self.standing,
+                major: self.major,
+                MBTI: self.MBTI,
+                phone: self.phone,
+                workstyle: self.workstyle,
+                profilePic: self.profilePic
             });
         } catch (error) {
+            // error is null for some reason
             res.json({
                 status: 'error',
-                error: 'oops'
+                error: 'there was an unexpected error'
             });
         }
     } else {
@@ -33,6 +44,43 @@ router.get('/self', async (req, res) => {
         });
     }
 });
+
+router.put('/setpic', async (req, res) => {
+    if (req.session.isAuthenticated) {
+        try {
+            const self = await req.db.User.findById(req.session.userid)
+                .populate('orgs._id', '_id name')
+                .populate('admin', '_id name');
+
+            self.profilePic = req.body.image
+            self.save()
+            // file approach
+            //let base64string = req.body.image
+            //let base64image = base64string.split(';base64,').pop()
+            //let dir = process.cwd();
+            // fs.writeFile(`${dir}\\profile_pictures\\${self._id}.jpg`, base64image, {encoding: 'base64'}, function(err) {
+            //     if(err) {
+            //         return console.log(err);
+            //     }
+            // }); 
+            res.json({
+                status: 'success'
+            })
+        } catch (error) {
+            // error is null for some reason
+            console.log(error)
+            res.json({
+                status: 'error',
+                error: 'there was an unexpected error'
+            });
+        }
+    } else {
+        res.json({
+            status: 'error',
+            error: 'not authenticated'
+        });
+    }
+})
 
 /* GET: /{userid}
         Returns a user profile based on a specified user id, containing
@@ -57,6 +105,11 @@ router.get('/self', async (req, res) => {
                 name: name of joined organization (outdated)
                 teamid: id of team within organization
             ]
+            standing : class standing,
+            major : major,
+            MBTI : MBTI,
+            phone : phone number,
+            workstyle : workstyle
         }
         Note: If user is not assigned a team, teamid will be non-existent
 */
@@ -68,20 +121,32 @@ router.get('/:userid', async (req, res) => {
             .populate('orgs._id', '_id name')
             .populate('admin', '_id name')
             .exec();
-        if (sessionUserId == userid) {
+        console.log("hello")
+        if (req.session.isAuthenticated) {
             res.json({
+                _id: user._id,
                 email: user.email,
-                displayName: user.displayName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                userType: user.userType,
                 admin: user.admin,
-                orgs: user.orgs
+                orgs: user.orgs,
+                standing: user.standing,
+                major: user.major,
+                MBTI: user.MBTI,
+                phone: user.phone,
+                workstyle: user.workstyle,
+                profilePic: user.profilePic
             });
-        } else { 
+        } else {
             res.json({
                 email: user.email,
-                displayName: user.displayName
+                firstName: user.firstName,
+                lastName: user.lastName,
             });
         }
-    } catch(error) {
+    } catch (error) {
+        console.log(error)
         res.json({
             status: 'error',
             error: '404'
@@ -93,7 +158,8 @@ router.get('/:userid', async (req, res) => {
     Edit specified users profile
     Payload Body:
     {
-        name: 'Users new display name'
+        firstName,
+        lastName
     }
     User authentication required for specified account
 */
@@ -103,13 +169,17 @@ router.put('/:userid', async (req, res) => {
         const userid = req.params.userid;
         const user = await req.db.User.findByIdAndUpdate(
             userid,
-            { displayName: req.body.name }
+            { 
+                firstName: req.body.firstName,
+                lastName: req.body.lastName, 
+            }
         );
         if (sessionUserId == userid) {
             user.save();
             res.json({
                 status: 'success',
-                displayName: req.body.name,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 admin: user.admin,
                 orgs: user.orgs
             });
@@ -131,10 +201,10 @@ router.put('/:userid', async (req, res) => {
     Delete specified user from database
     User authentication required for specified account
 */
-router.delete('/:userid', async(req, res) => {
+router.delete('/:userid', async (req, res) => {
     try {
-        if(req.session.isAuthenticated) {
-            if(req.session.userid != req.params.userid) {
+        if (req.session.isAuthenticated) {
+            if (req.session.userid != req.params.userid) {
                 res.json({
                     status: 'error',
                     message: 'improper credentials'
@@ -162,5 +232,63 @@ router.delete('/:userid', async(req, res) => {
         })
     }
 });
-    
+
+
+/* GET: /{userid}
+    body: standing, major, MBTI, phone, workstyle
+    Return user information:
+    {
+        displayName : name,
+        standing : class standing,
+        major : major,
+        MBTI : MBTI,
+        phone : phone number,
+        workstyle : workstyle
+    }
+*/
+
+router.put('/information/:userid', async (req, res) => {
+    try {
+        const id = req.params.userid;
+        const user = await req.db.User.findById(id);
+        let standing = req.body.standing ? req.body.standing : null;
+        let major = req.body.major ? req.body.major : null;
+        let MBTI = req.body.MBTI ? req.body.MBTI : null;
+        let phone = req.body.phone ? req.body.phone : null;
+        let workstyle = req.body.workstyle ? req.body.workstyle : null;
+        if (standing) {
+            console.log("here2");
+            user.standing = standing;
+            console.log(user.standing);
+        }
+        if (major) {
+            user.major = major;
+        }
+        if (MBTI) {
+            user.MBTI = MBTI;
+        }
+        if (phone) {
+            user.phone = phone;
+        }
+        if (workstyle) {
+            user.workstyle = workstyle;
+        }
+        user.save();
+        res.json({
+            status: 'success',
+            // displayName: req.body.name,
+            // standing : req.body.standing,
+            // major : req.body.major,
+            // MBTI : req.body.MBTI,
+            // phone : req.body.phone,
+            // workstyle : req.body.workstyle
+        });
+    } catch (error) {
+        res.json({
+            status: 'error',
+            error: '404'
+        });
+    }
+})
+
 export default router;
