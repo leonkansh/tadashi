@@ -67,7 +67,8 @@ router.post('/signin', async(req, res) => {
                     authenticated: req.session.isAuthenticated,
                     _id: user._id,
                     email: user.email,
-                    displayName: user.displayName,
+                    firstName: user.firstName,
+                    lastName: user.lastName,
                     userType: user.userType,
                     admin: user.admin,
                     orgs: user.orgs
@@ -95,7 +96,8 @@ router.post('/signin', async(req, res) => {
     {
         email: emailed used for registration,
         password: password used for registration,
-        name: name used for display,
+        firstName
+        lastName
         userType: admin user or normal user
     }
 */
@@ -123,7 +125,8 @@ router.post('/signup', async(req, res) => {
                     { email: req.body.email },
                     { $setOnInsert: {
                         email: req.body.email,
-                        displayName: req.body.name,
+                        firstName: req.body.firstName,
+                        lastName: req.body.lastName,
                         userType: req.body.usertype,
                         salt: saltHash.salt,
                         hash: saltHash.hash,

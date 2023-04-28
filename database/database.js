@@ -11,7 +11,8 @@ async function main() {
 
     const userSchema = new mongoose.Schema({
         email: String,
-        displayName: String,
+        firstName: String,
+        lastName: String,
         userType: String,
         hash: String,
         salt: String,

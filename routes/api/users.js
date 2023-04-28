@@ -17,7 +17,8 @@ router.get('/self', async (req, res) => {
             res.json({
                 status: 'success',
                 email: self.email,
-                displayName: self.displayName,
+                firstName: self.firstName,
+                lastName: self.lastName,
                 userType: self.userType,
                 admin: self.admin,
                 orgs: self.orgs,
@@ -120,11 +121,13 @@ router.get('/:userid', async (req, res) => {
             .populate('orgs._id', '_id name')
             .populate('admin', '_id name')
             .exec();
+        console.log("hello")
         if (req.session.isAuthenticated) {
             res.json({
                 _id: user._id,
                 email: user.email,
-                displayName: user.displayName,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 userType: user.userType,
                 admin: user.admin,
                 orgs: user.orgs,
@@ -138,10 +141,12 @@ router.get('/:userid', async (req, res) => {
         } else {
             res.json({
                 email: user.email,
-                displayName: user.displayName
+                firstName: user.firstName,
+                lastName: user.lastName,
             });
         }
     } catch (error) {
+        console.log(error)
         res.json({
             status: 'error',
             error: '404'
@@ -153,7 +158,8 @@ router.get('/:userid', async (req, res) => {
     Edit specified users profile
     Payload Body:
     {
-        name: 'Users new display name'
+        firstName,
+        lastName
     }
     User authentication required for specified account
 */
@@ -163,13 +169,17 @@ router.put('/:userid', async (req, res) => {
         const userid = req.params.userid;
         const user = await req.db.User.findByIdAndUpdate(
             userid,
-            { displayName: req.body.name }
+            { 
+                firstName: req.body.firstName,
+                lastName: req.body.lastName, 
+            }
         );
         if (sessionUserId == userid) {
             user.save();
             res.json({
                 status: 'success',
-                displayName: req.body.name,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 admin: user.admin,
                 orgs: user.orgs
             });

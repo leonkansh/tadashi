@@ -8,7 +8,7 @@ router.get('/:orgid/:userid', async (req, res) => {
             const orgid = req.params.orgid;
             const userid = req.params.userid;
             const userprofile = await req.db.UserProfile.findOne({userid: userid, orgid: orgid});
-
+            
             if (userprofile != null) {
                 res.json({
                     status: 'success',

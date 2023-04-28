@@ -105,8 +105,8 @@ router.get('/:orgid', async (req, res) => {
         try {
             const orgid = req.params.orgid;
             const org = await req.db.Org.findById(orgid)
-                .populate('admin', '_id displayName')
-                .populate('members', '_id displayName profilePic');
+                .populate('admin', '_id firstName lastName')
+                .populate('members', '_id firstName lastName profilePic');
 
             console.log(org)
 
@@ -117,7 +117,7 @@ router.get('/:orgid', async (req, res) => {
             res.json({
                 status: 'success',
                 name: org.name,
-                admin: org.admin.displayName,
+                admin: org.admin,
                 courseTitle: org.courseTitle,
                 quarterOffered: org.quarterOffered,
                 members: org.members,
